@@ -1,1 +1,66 @@
-<p>register works!</p>
+<!-- src/app/features/auth/register/register.html -->
+<div class="auth-page">
+  <div class="pixel-bg"></div>
+
+  <div class="auth-card">
+    <div class="logo">
+      <span class="logo-main">TRIVIA QUIZ</span>
+      <span class="logo-sub">CREATE YOUR PLAYER</span>
+    </div>
+
+    <h1 class="title">Sign up</h1>
+
+    <form class="auth-form">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input
+          id="username"
+          type="text"
+          placeholder="Choose a username"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          placeholder="you@example.com"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          placeholder="Create a password"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirm password</label>
+        <input
+          id="confirmPassword"
+          type="password"
+          placeholder="Repeat your password"
+        />
+      </div>
+
+      <!-- Por ahora solo va al login después de “crear cuenta” -->
+      <button
+        class="primary-btn"
+        type="button"
+        [routerLink]="['/auth/login']"
+      >
+        CREATE ACCOUNT
+      </button>
+    </form>
+
+    <p class="switch-auth">
+      Already have an account?
+      <a routerLink="/auth/login">Log in</a>
+    </p>
+  </div>
+</div>
+
