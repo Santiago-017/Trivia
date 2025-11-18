@@ -1,1 +1,48 @@
-<p>login works!</p>
+<!-- src/app/features/auth/login/login.html -->
+<div class="auth-page">
+  <div class="pixel-bg"></div>
+
+  <div class="auth-card">
+    <div class="logo">
+      <span class="logo-main">TRIVIA QUIZ</span>
+      <span class="logo-sub">READY TO PLAY?</span>
+    </div>
+
+    <h1 class="title">Login</h1>
+
+    <form class="auth-form">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input
+          id="username"
+          type="text"
+          placeholder="Enter your username"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          placeholder="Enter your password"
+        />
+      </div>
+
+      <!-- Por ahora el botón solo navega al main/landing-page -->
+      <button
+        class="primary-btn"
+        type="button"
+        [routerLink]="['/landing-page']"
+      >
+        START PLAYING
+      </button>
+    </form>
+
+    <p class="switch-auth">
+      Don't have an account?
+      <a routerLink="/auth/register">Sign up</a>
+    </p>
+  </div>
+</div>
+
