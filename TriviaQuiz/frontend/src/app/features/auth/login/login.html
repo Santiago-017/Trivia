@@ -17,6 +17,8 @@
           id="username"
           type="text"
           placeholder="Enter your username"
+          [(ngModel)]="username"
+          name="username"
         />
       </div>
 
@@ -26,6 +28,8 @@
           id="password"
           type="password"
           placeholder="Enter your password"
+          [(ngModel)]="password"
+          name="password"
         />
       </div>
 
@@ -33,9 +37,10 @@
       <button
         class="primary-btn"
         type="button"
-        routerLink="/landing-page"
+        (click)="login()"
+        [disabled]="loading"
       >
-          START PLAYING
+          {{ loading ? 'Logging in...' : 'LOGIN' }}
       </button>
 
     </form>
