@@ -1,1 +1,99 @@
-/* You can add global styles to this file, and also import other style files */
+/* =========================================
+   FONDO GLOBAL TIPO VIDEOJUEGO: .game-bg
+   ========================================= */
+
+.game-bg {
+  min-height: 100vh;
+  position: relative;
+  padding: 1.5rem;
+  overflow: hidden;
+
+  /* Cielo + transición al suelo */
+  background: linear-gradient(
+    to bottom,
+    #8ee5ff 0%,
+    #4bb0ff 45%,
+    #4bb0ff 55%,
+    #8ce46f 55%,
+    #3ba647 70%,
+    #d6863c 70%,
+    #8b4513 100%
+  );
+}
+
+/* Montañas / colinas al fondo */
+.game-bg::before {
+  content: "";
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: 18%;
+  height: 35%;
+  background:
+    radial-gradient(circle at 10% 100%, #98f58a 0, #53b446 45%, transparent 46%),
+    radial-gradient(circle at 50% 100%, #b4ff9a 0, #4dae40 45%, transparent 46%),
+    radial-gradient(circle at 90% 100%, #a3f48c 0, #3e9b3d 45%, transparent 46%);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* Camino / suelo de bloques en la parte baja */
+.game-bg::after {
+  content: "";
+  position: absolute;
+  left: -5%;
+  right: -5%;
+  bottom: 0;
+  height: 16%;
+  background:
+    repeating-linear-gradient(
+      to right,
+      #c97b3b 0,
+      #c97b3b 40px,
+      #af6531 40px,
+      #af6531 48px
+    );
+  box-shadow:
+    0 -6px 0 rgba(0, 0, 0, 0.18),
+    0 -10px 12px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+/* Nubes blancas */
+
+.game-bg__clouds {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.game-bg__clouds::before,
+.game-bg__clouds::after {
+  content: "";
+  position: absolute;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.15));
+}
+
+/* nube grande izquierda */
+.game-bg__clouds::before {
+  top: 8%;
+  left: 12%;
+  width: 160px;
+  height: 80px;
+  background:
+    radial-gradient(circle at 20% 40%, #ffffff 0, #ffffff 40%, transparent 41%),
+    radial-gradient(circle at 55% 30%, #ffffff 0, #ffffff 40%, transparent 41%),
+    radial-gradient(circle at 85% 45%, #ffffff 0, #ffffff 40%, transparent 41%);
+}
+
+/* nube derecha pequeña */
+.game-bg__clouds::after {
+  top: 15%;
+  right: 16%;
+  width: 110px;
+  height: 55px;
+  background:
+    radial-gradient(circle at 25% 40%, #ffffff 0, #ffffff 40%, transparent 41%),
+    radial-gradient(circle at 70% 35%, #ffffff 0, #ffffff 40%, transparent 41%);
+}
