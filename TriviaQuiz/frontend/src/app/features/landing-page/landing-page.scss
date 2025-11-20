@@ -1,84 +1,121 @@
-body {
-  margin: 0;
-  padding: 0;
-  background: #78d6ff;
-  font-family: 'Press Start 2P', monospace, Arial, sans-serif;
+/* La clase .game-bg ya viene de styles.scss y pone el fondo + flex centering */
+
+.landing-page {
+  /* Por si quieres ajustar algo solo para la landing */
 }
 
-.wrapper {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-}
+/* Contenedor principal centrado */
 
-.clouds {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 45%;
-  z-index: 2;
-  pointer-events: none;
-  background:
-    url('https://png.pngtree.com/png-clipart/20231024/ourmid/pngtree-nube-pixel-art-png-image_10067636.png') no-repeat 10% 15%,
-    url('https://png.pngtree.com/png-clipart/20231024/ourmid/pngtree-nube-pixel-art-png-image_10067636.png') no-repeat 60% 7%,
-    url('https://png.pngtree.com/png-clipart/20231024/ourmid/pngtree-nube-pixel-art-png-image_10067636.png') no-repeat 83% 28%;
-}
-
-.center-content {
+.landing-menu {
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 70px;
-}
-
-.subtitle {
-  color: #F7DF1E;
+  gap: 1.8rem;
   text-align: center;
-  font-size: 2rem;
-  letter-spacing: 2px;
-  text-shadow: 2px 2px #263238;
-  margin-bottom: 35px;
+  padding: 1rem;
 }
 
-.title {
-  color: #fff;
-  background: #053353;
-  border: 8px solid #141259;
-  font-size: 5rem;
-  width: fit-content;
-  padding: 0 36px;
-  text-shadow: 4px 4px #454d7d;
-  font-family: 'Press Start 2P', monospace, Arial, sans-serif;
-  letter-spacing: 8px;
-  border-radius: 12px;
-  margin-bottom: 28px;
+/* Cabecera: tagline + título */
+
+.landing-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
 }
 
-.start-btn {
-  background: #f04522;
-  color: #fff;
-  font-family: 'Press Start 2P', monospace, Arial, sans-serif;
-  font-size: 2em;
-  border: 6px solid #fff;
-  border-radius: 9px;
-  padding: 16px 42px;
-  cursor: pointer;
-  box-shadow: 0 4px #a82e14;
-  text-shadow: 2px 2px #141259;
+.landing-tagline {
+  font-size: 0.9rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #ffd54f;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.45);
 }
 
-.ground {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 90px;
-  background: url('https://i.imgur.com/Sw9blVG.png') repeat-x;
+.landing-title {
+  font-size: 2.6rem;
+  font-weight: 900;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  padding: 0.6rem 2.5rem;
+  border-radius: 1.4rem;
+
+  background: linear-gradient(to bottom, #072a5a, #06326e);
+  color: #f9fbff;
+  border: 4px solid #051744;
+  box-shadow:
+    0 8px 0 rgba(5, 23, 68, 0.85),
+    0 12px 18px rgba(15, 23, 42, 0.7);
 }
+
+/* Panel inferior con texto + botón */
+
+.landing-panel {
+  margin-top: 0.5rem;
+  padding: 1.6rem 2rem 1.4rem;
+  max-width: 520px;
+
+  background: rgba(3, 18, 46, 0.55);
+  border-radius: 1.6rem;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 12px 18px rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(10px);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.landing-subtitle {
+  font-size: 0.95rem;
+  max-width: 460px;
+  color: #e3f2fd;
+}
+
+/* Botón START: reutiliza btn-nintendo global con pequeños ajustes */
+
+.landing-start {
+  min-width: 220px;
+  font-size: 0.95rem;
+}
+
+/* Texto inferior con enlaces */
+
+.landing-secondary {
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  color: #e3f2fd;
+
+  a {
+    color: #fffbeb;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+
+/* Responsive sencillo */
 
 @media (max-width: 600px) {
-  .title { font-size: 2.5rem; }
-  .subtitle { font-size: 1rem; }
-  .start-btn { font-size: 1.2em; padding: 10px 22px;}
-  .ground { height: 60px; }
+  .landing-title {
+    font-size: 1.9rem;
+    padding: 0.5rem 1.6rem;
+    letter-spacing: 0.18em;
+  }
+
+  .landing-panel {
+    padding: 1.3rem 1.4rem 1.2rem;
+  }
+
+  .landing-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .landing-start {
+    min-width: 190px;
+    font-size: 0.85rem;
+  }
 }

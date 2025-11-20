@@ -1,6 +1,59 @@
-/* =========================================
-   FONDO GLOBAL TIPO VIDEOJUEGO: .game-bg
-   ========================================= */
+/* ============================================
+   VARIABLES GLOBALES
+   ============================================ */
+
+:root {
+  /* Paleta general Nintendo */
+  --color-primary: #1f8cff;
+  --color-primary-dark: #1866c9;
+  --color-panel-border: #0f3d80;
+  --color-panel-bg-light: #4fc3ff;
+  --color-panel-bg-dark: #1560c5;
+
+  /* Textos */
+  --text-dark: #12325b;
+  --text-light: #ffffff;
+
+  /* Fondo de videojuego */
+  --sky-top: #8ee5ff;
+  --sky-bottom: #4bb0ff;
+  --hill-light: #8ce46f;
+  --hill-dark: #3ba647;
+  --ground-top: #d6863c;
+  --ground-bottom: #8b4513;
+
+  /* Sombras Nintendo */
+  --shadow-strong: rgba(15, 23, 42, 0.6);
+  --shadow-soft: rgba(0, 0, 0, 0.25);
+
+  /* Tipografía general */
+  --font-ui: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* ============================================
+   RESET GLOBAL
+   ============================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: var(--font-ui);
+  background: var(--sky-top);
+  color: var(--text-light);
+  overflow-x: hidden;
+}
+
+/* ============================================
+   FONDO GLOBAL DE VIDEOJUEGO .game-bg
+   ============================================ */
 
 .game-bg {
   min-height: 100vh;
@@ -8,20 +61,24 @@
   padding: 1.5rem;
   overflow: hidden;
 
+  display: flex;               
+  justify-content: center;      
+  align-items: center;         
+
   /* Cielo + transición al suelo */
   background: linear-gradient(
     to bottom,
-    #8ee5ff 0%,
-    #4bb0ff 45%,
-    #4bb0ff 55%,
-    #8ce46f 55%,
-    #3ba647 70%,
-    #d6863c 70%,
-    #8b4513 100%
+    var(--sky-top) 0%,
+    var(--sky-bottom) 45%,
+    var(--sky-bottom) 55%,
+    var(--hill-light) 55%,
+    var(--hill-dark) 70%,
+    var(--ground-top) 70%,
+    var(--ground-bottom) 100%
   );
 }
 
-/* Montañas / colinas al fondo */
+/* Colinas redondeadas */
 .game-bg::before {
   content: "";
   position: absolute;
@@ -37,7 +94,7 @@
   pointer-events: none;
 }
 
-/* Camino / suelo de bloques en la parte baja */
+/* Camino / suelo */
 .game-bg::after {
   content: "";
   position: absolute;
@@ -59,8 +116,7 @@
   pointer-events: none;
 }
 
-/* Nubes blancas */
-
+/* NUBES */
 .game-bg__clouds {
   position: absolute;
   inset: 0;
@@ -87,7 +143,7 @@
     radial-gradient(circle at 85% 45%, #ffffff 0, #ffffff 40%, transparent 41%);
 }
 
-/* nube derecha pequeña */
+/* nube pequeña derecha */
 .game-bg__clouds::after {
   top: 15%;
   right: 16%;
@@ -97,3 +153,97 @@
     radial-gradient(circle at 25% 40%, #ffffff 0, #ffffff 40%, transparent 41%),
     radial-gradient(circle at 70% 35%, #ffffff 0, #ffffff 40%, transparent 41%);
 }
+
+/* ============================================
+   TEXTOS Y TITULOS GLOBALES
+   ============================================ */
+
+h1,
+.title-1 {
+  font-size: 2rem;
+  font-weight: 900;
+  text-align: center;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 2px 4px var(--shadow-strong);
+}
+
+h2,
+.title-2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+h3,
+.title-3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+p,
+li,
+span {
+  font-size: 1rem;
+}
+
+/* ============================================
+   BOTÓN GLOBAL ESTILO NINTENDO
+   ============================================ */
+
+.btn-nintendo {
+  border: 3px solid var(--color-panel-border);
+  background: linear-gradient(to bottom, #ffffff, #f3f7ff);
+  color: var(--text-dark);
+  padding: 0.8rem 1.2rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  box-shadow:
+    0 6px 0 var(--color-panel-border),
+    0 10px 12px rgba(15, 23, 42, 0.5);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  cursor: pointer;
+}
+
+.btn-nintendo:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 7px 0 var(--color-panel-border),
+    0 13px 15px rgba(15, 23, 42, 0.6);
+}
+
+.btn-nintendo:active {
+  transform: translateY(2px);
+  box-shadow:
+    0 3px 0 var(--color-panel-border),
+    0 6px 8px rgba(15, 23, 42, 0.6);
+}
+
+/* ============================================
+   UTILIDADES GLOBALES
+   ============================================ */
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }

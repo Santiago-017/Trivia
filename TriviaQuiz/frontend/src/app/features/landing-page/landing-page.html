@@ -1,20 +1,32 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Menu Trivia</title>
-  
-</head>
-<body>
-  <div class="wrapper">
-    <div class="clouds"></div>
-    <div class="center-content">
-      <h2 class="subtitle">LET'S PLAY TOGETHER</h2>
-      <h1 class="title">TRIVIA</h1>
-      <button class="start-btn">START</button>
-    </div>
-    <div class="ground"></div>
-  </div>
-</body>
-</html>
+<div class="game-bg landing-page">
+  <div class="game-bg__clouds"></div>
+
+  <main class="landing-menu">
+    <header class="landing-header">
+      <p class="landing-tagline">LET'S PLAY TOGETHER</p>
+      <h1 class="landing-title">TRIVIA QUIZ</h1>
+    </header>
+
+    <section class="landing-panel">
+      <p class="landing-subtitle">
+        Answer questions, earn coins and challenge your friends in this trivia adventure.
+      </p>
+
+      <button
+        class="btn-nintendo landing-start"
+        type="button"
+        routerLink="/login"
+      >
+        START
+      </button>
+
+      <p class="landing-secondary">
+        New here?
+        <a routerLink="/register">Create your player</a>
+        <br />
+        Already a player?
+        <a routerLink="/login">Log in</a>
+      </p>
+    </section>
+  </main>
+</div>
