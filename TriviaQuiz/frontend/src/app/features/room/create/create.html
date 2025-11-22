@@ -1,4 +1,141 @@
-<div class="create-page">
-  <h1>CREATE ROOM</h1>
-  <!-- Aquí luego ponemos el formulario/configuración de la sala -->
+<!-- src/app/features/room/create/create.html -->
+<div class="game-bg">
+  <div class="game-bg__clouds"></div>
+
+  <div class="create-panel">
+    <!-- HEADER -->
+    <div class="title-1 create-title">
+      CREATING ROOM...
+    </div>
+
+    <!-- BODY -->
+    <div class="create-panel__body">
+      <!-- # PLAYERS -->
+      <div class="create-option">
+        <div class="create-option__label"># PLAYERS</div>
+        <div class="create-option__dots"></div>
+        <div class="create-option__controls">
+          <button
+            type="button"
+            class="arrow-btn"
+            (click)="changePlayers(-1)"
+          >
+            ◀
+          </button>
+
+          <div class="value-pill">
+            {{ players }}
+          </div>
+
+          <button
+            type="button"
+            class="arrow-btn"
+            (click)="changePlayers(1)"
+          >
+            ▶
+          </button>
+        </div>
+      </div>
+
+      <!-- DIFFICULTY -->
+      <div class="create-option">
+        <div class="create-option__label">DIFFICULTY</div>
+        <div class="create-option__dots"></div>
+        <div class="create-option__controls">
+          <button
+            type="button"
+            class="arrow-btn"
+            (click)="changeDifficulty(-1)"
+          >
+            ◀
+          </button>
+
+          <div class="value-pill">
+            {{ difficulties[difficultyIndex] }}
+          </div>
+
+          <button
+            type="button"
+            class="arrow-btn"
+            (click)="changeDifficulty(1)"
+          >
+            ▶
+          </button>
+        </div>
+      </div>
+
+      <!-- # QUESTIONS -->
+      <div class="create-option">
+        <div class="create-option__label"># QUESTIONS</div>
+        <div class="create-option__dots"></div>
+        <div class="create-option__controls">
+          <button
+            type="button"
+            class="arrow-btn"
+            (click)="changeQuestions(-1)"
+          >
+            ◀
+          </button>
+
+          <div class="value-pill">
+            {{ questions }}
+          </div>
+
+          <button
+            type="button"
+            class="arrow-btn"
+            (click)="changeQuestions(1)"
+          >
+            ▶
+          </button>
+        </div>
+      </div>
+
+      <!-- CATEGORY -->
+      <div class="create-option">
+        <div class="create-option__label">CATEGORY</div>
+        <div class="create-option__dots"></div>
+        <div class="create-option__controls">
+          <button
+            type="button"
+            class="arrow-btn"
+            (click)="changeCategory(-1)"
+          >
+            ◀
+          </button>
+
+          <div class="value-pill">
+            {{ categories[categoryIndex] }}
+          </div>
+
+          <button
+            type="button"
+            class="arrow-btn"
+            (click)="changeCategory(1)"
+          >
+            ▶
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="create-panel__footer">
+      <button
+        class="btn-nintendo create-panel__create-btn"
+        type="button"
+        (click)="onCreateRoom()"
+      >
+        CREATE
+      </button>
+
+      <button
+        class="create-panel__back"
+        type="button"
+        routerLink="/room/room-menu"
+      >
+        ← BACK
+      </button>
+    </div>
+  </div>
 </div>

@@ -1,3 +1,190 @@
-.create-page {
-  color: white;
+/* src/app/features/room/create/create.scss */
+
+/* Panel grande amarillo estilo mockup */
+.create-panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 780px;
+
+  padding: 1.8rem 2.2rem 2.4rem;
+  border-radius: 1.5rem;
+
+  background: #ffe54c;
+  border: 4px solid #1e3a8a;
+  box-shadow:
+    0 18px 0 rgba(14, 64, 134, 0.8),
+    0 24px 26px rgba(15, 23, 42, 0.85);
+
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
 }
+
+/* HEADER */
+.create-panel__header {
+  font-family: "Press Start 2P", system-ui;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-shadow:
+    3px 3px 0 #1f2937,
+    0 0 6px rgba(0, 0, 0, 0.6);
+}
+
+/* BODY: caja blanca interior */
+.create-panel__body {
+  margin-top: 0.5rem;
+  padding: 1.3rem 1.4rem;
+  border-radius: 1.3rem;
+  background: #ffffff;
+  border: 4px solid #1e3a8a;
+  box-shadow: inset 0 0 0 3px rgba(30, 64, 175, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+/* Cada fila de configuración */
+.create-option {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  column-gap: 0.8rem;
+}
+
+.create-option__label {
+  font-family: "Press Start 2P", system-ui;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  color: #1f2937;
+
+  padding: 0.7rem 1rem;
+  border-radius: 0.9rem;
+  background: #ffd54a;
+  border: 3px solid #1e3a8a;
+  box-shadow:
+    0 4px 0 #b28d23,
+    0 0 0 1px rgba(255, 255, 255, 0.6);
+}
+
+/* Puntos centrales */
+.create-option__dots {
+  height: 2px;
+  border-bottom: 3px dotted rgba(148, 163, 184, 0.9);
+}
+
+/* Controles de la derecha */
+.create-option__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Botones flecha */
+.arrow-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 3px solid #1e3a8a;
+  background: #ffe54c;
+  color: #1f2937;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 4px 0 #b28d23,
+    0 0 0 1px rgba(255, 255, 255, 0.7);
+  transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.08s ease;
+
+  &:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+    box-shadow:
+      0 5px 0 #b28d23,
+      0 0 0 1px rgba(255, 255, 255, 0.9);
+  }
+
+  &:active {
+    transform: translateY(2px);
+    box-shadow:
+      0 2px 0 #b28d23,
+      0 0 0 1px rgba(255, 255, 255, 0.7);
+  }
+}
+
+/* Valor seleccionado (número, dificultad, categoría) */
+.value-pill {
+  min-width: 70px;
+  padding: 0.55rem 1rem;
+  border-radius: 0.9rem;
+  background: #fffbff;
+  border: 3px solid #1e3a8a;
+  box-shadow:
+    0 4px 0 #9ca3af,
+    0 0 0 1px rgba(255, 255, 255, 0.9);
+  text-align: center;
+  font-family: "Press Start 2P", system-ui;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: #111827;
+}
+
+/* FOOTER */
+.create-panel__footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.4rem;
+}
+
+/* Botón CREATE reutilizando btn-nintendo */
+.create-panel__create-btn {
+  width: 220px;
+  justify-content: center;
+}
+
+/* Botón volver */
+.create-panel__back {
+  border: none;
+  background: transparent;
+  color: #1f2937;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.1s ease, transform 0.1s ease;
+
+  &:hover {
+    opacity: 1;
+    transform: translateY(-1px);
+  }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .create-panel {
+    padding: 1.4rem 1.2rem 1.8rem;
+  }
+
+  .create-panel__body {
+    padding: 1rem 0.9rem;
+  }
+
+  .create-option__label {
+    padding: 0.6rem 0.7rem;
+    font-size: 0.6rem;
+  }
+
+  .value-pill {
+    min-width: 60px;
+    padding-inline: 0.6rem;
+    font-size: 0.65rem;
+  }
+}
+
