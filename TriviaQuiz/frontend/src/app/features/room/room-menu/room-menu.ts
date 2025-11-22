@@ -9,4 +9,4 @@ import { RouterModule } from '@angular/router';
   templateUrl: './room-menu.html',
   styleUrls: ['./room-menu.scss'],
 })
-export class RoomMenuComponent {}
+export class RoomMenu {}

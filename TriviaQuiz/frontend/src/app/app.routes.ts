@@ -44,7 +44,7 @@ export const routes: Routes = [
   {
   path: 'room',
   loadComponent: () =>
-    import('./features/room/room-menu/room-menu').then(m => m.RoomMenuComponent),
+    import('./features/room/room-menu/room-menu').then(m => m.RoomMenu),
   },
   {
   path: 'room/create',
