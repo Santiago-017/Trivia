@@ -42,7 +42,7 @@ export const routes: Routes = [
     component: Scoreboard
   },
   {
-  path: 'room',
+  path: 'room/room-menu',
   loadComponent: () =>
     import('./features/room/room-menu/room-menu').then(m => m.RoomMenu),
   },

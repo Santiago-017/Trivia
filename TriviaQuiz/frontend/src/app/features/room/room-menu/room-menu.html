@@ -1,17 +1,27 @@
-<div class="choose-page">
-  <div class="bg-clouds"></div>
+<div class="game-bg">
+  <!-- Nubes del fondo global -->
+  <div class="game-bg__clouds"></div>
 
-  <h1 class="choose-title">CHOOSE AN OPTION</h1>
+  <!-- Contenedor del menú de salas -->
+  <div class="room-menu">
+    <h1 class="title-1 room-menu__title">
+      CHOOSE A ROOM
+    </h1>
 
-  <div class="menu-container">
+    <div class="room-menu__buttons">
+      <button
+        class="btn-nintendo room-menu__btn"
+        routerLink="/room/create"
+      >
+        CREATE A ROOM
+      </button>
 
-    <button class="option-btn" routerLink="/room/create">
-      CREATE A ROOM
-    </button>
-
-    <button class="option-btn" routerLink="/room/join">
-      JOIN A ROOM
-    </button>
-
+      <button
+        class="btn-nintendo room-menu__btn"
+        routerLink="/room/join"
+      >
+        JOIN A ROOM
+      </button>
+    </div>
   </div>
 </div>
