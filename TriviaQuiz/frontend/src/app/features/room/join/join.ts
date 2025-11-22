@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-join',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './join.html',
-  styleUrl: './join.scss',
+  styleUrls: ['./join.scss'],
 })
-export class Join {
-
-}
+export class JoinComponent {}
