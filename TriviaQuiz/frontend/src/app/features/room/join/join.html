@@ -1,4 +1,31 @@
-<div class="join-page">
-  <h1>JOIN ROOM</h1>
-  <!-- Aquí luego ponemos el formulario para escribir el código -->
+<!-- src/app/features/room/join/join.html -->
+<div class="game-bg">
+  <div class="game-bg__clouds"></div>
+
+  <div class="join-panel">
+    <h1 class="title-1 join-panel__title">
+      JOIN A ROOM
+    </h1>
+
+    <p class="join-panel__subtitle">
+      ENTER THE ROOM CODE SHARED BY YOUR FRIEND.
+    </p>
+
+    <div class="join-panel__form">
+      <input
+        type="text"
+        class="join-input"
+        placeholder="ROOM CODE"
+        maxlength="8"
+      />
+
+      <button class="btn-nintendo join-panel__btn">
+        JOIN ROOM
+      </button>
+    </div>
+
+    <button class="join-panel__back" routerLink="/room/room-menu">
+      ← BACK TO ROOMS
+    </button>
+  </div>
 </div>

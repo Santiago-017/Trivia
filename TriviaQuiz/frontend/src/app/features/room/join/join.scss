@@ -1,3 +1,104 @@
-.join-page {
-  color: white;
+/* src/app/features/room/join/join.scss */
+
+/* Panel central, mismo estilo que el de room-menu */
+.join-panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 520px;
+
+  padding: 2rem 2.5rem 2.2rem;
+  border-radius: 1.5rem;
+
+  background: linear-gradient(
+    135deg,
+    rgba(79, 195, 255, 0.96),
+    rgba(21, 96, 197, 0.98)
+  );
+  border: 4px solid #0b3a7c;
+  box-shadow:
+    0 16px 0 rgba(15, 61, 128, 0.7),
+    0 22px 26px rgba(15, 23, 42, 0.85);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.join-panel__title {
+  margin: 0;
+  text-align: center;
+  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.6);
+}
+
+.join-panel__subtitle {
+  margin: 0;
+  font-size: 0.7rem;
+  text-align: center;
+  color: #e2f3ff;
+  opacity: 0.9;
+}
+
+/* Contenedor input + botón */
+.join-panel__form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Input del código */
+.join-input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border-radius: 999px;
+  border: 2px solid #0b3a7c;
+  background: #ffffff;
+  box-shadow:
+    0 5px 0 rgba(0, 0, 0, 0.35),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+  font-size: 0.85rem;
+  text-align: center;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  outline: none;
+  transition: box-shadow 0.12s ease, transform 0.12s ease, border-color 0.12s ease;
+
+  &::placeholder {
+    color: #9ca3af;
+  }
+
+  &:focus {
+    border-color: #38bdf8;
+    box-shadow:
+      0 6px 0 rgba(0, 0, 0, 0.4),
+      0 0 0 2px rgba(56, 189, 248, 0.6);
+    transform: translateY(-1px);
+  }
+}
+
+/* Botón principal reutilizando btn-nintendo */
+.join-panel__btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* Botón de volver */
+.join-panel__back {
+  margin-top: 0.4rem;
+  border: none;
+  background: transparent;
+  color: #e5f0ff;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+
+  &:hover {
+    opacity: 1;
+    transform: translateY(-1px);
+  }
 }
