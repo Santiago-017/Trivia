@@ -9,4 +9,4 @@ import { RouterModule } from '@angular/router';
   templateUrl: './join.html',
   styleUrls: ['./join.scss'],
 })
-export class JoinComponent {}
+export class Join {}

@@ -40,5 +40,21 @@ export const routes: Routes = [
   {
     path: 'scoreboard',
     component: Scoreboard
-  }
+  },
+  {
+  path: 'room',
+  loadComponent: () =>
+    import('./features/room/room-menu/room-menu').then(m => m.RoomMenuComponent),
+  },
+  {
+  path: 'room/create',
+  loadComponent: () =>
+    import('./features/room/create/create').then(m => m.Create),
+  },
+  {
+  path: 'room/join',
+  loadComponent: () =>
+    import('./features/room/join/join').then(m => m.Join),
+  },
+
 ];

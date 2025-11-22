@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-create',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './create.html',
-  styleUrl: './create.scss',
+  styleUrls: ['./create.scss'],
 })
-export class Create {
-
-}
+export class Create {}

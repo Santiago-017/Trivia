@@ -1,0 +1,75 @@
+:root {
+  --mario-sky: #74c7ff;
+  --mario-yellow: #ffe32e;
+  --mario-yellow-dark: #c7a400;
+  --mario-blue-border: #1e3fa9;
+  --mario-text: #1a1b4b;
+}
+
+.choose-page {
+  height: 100vh;
+  width: 100%;
+  background: var(--mario-sky);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 3rem;
+  font-family: "Press Start 2P", system-ui, -apple-system;
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-clouds {
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  background-size: 300px;
+  background-repeat: repeat;
+  pointer-events: none;
+}
+
+.choose-title {
+  font-size: 1rem;
+  color: #fff;
+  text-shadow: 3px 3px 0 #000;
+  margin-bottom: 3rem;
+}
+
+.menu-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 80%;
+  max-width: 420px;
+}
+
+.option-btn {
+  width: 100%;
+  padding: 1.3rem 1rem;
+  border-radius: 1rem;
+  background: var(--mario-yellow);
+  border: 6px solid var(--mario-blue-border);
+  color: var(--mario-text);
+  font-size: 0.9rem;
+  font-family: "Press Start 2P";
+  cursor: pointer;
+  transition: all 0.12s ease-out;
+  box-shadow:
+    0 6px 0 var(--mario-yellow-dark),
+    0 10px 10px rgba(0, 0, 0, 0.25);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      0 8px 0 var(--mario-yellow-dark),
+      0 12px 12px rgba(0, 0, 0, 0.35);
+    filter: brightness(1.05);
+  }
+
+  &:active {
+    transform: translateY(3px);
+    box-shadow:
+      0 3px 0 var(--mario-yellow-dark),
+      0 5px 5px rgba(0, 0, 0, 0.35);
+  }
+}
