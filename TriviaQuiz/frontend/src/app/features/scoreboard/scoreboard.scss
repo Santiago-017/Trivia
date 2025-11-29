@@ -1,0 +1,152 @@
+/* src/app/features/scoreboard/scoreboard.scss */
+
+/* Cartel principal */
+.scoreboard-panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 900px;
+  margin-inline: auto;
+  margin-top: 2.5rem;
+
+  padding: 2.5rem 2.2rem 2rem;
+  border-radius: 1.8rem;
+
+  background: #ffe54c;
+  border: 4px solid #102a6b;
+  box-shadow:
+    0 18px 0 rgba(15, 64, 134, 0.9),
+    0 24px 26px rgba(15, 23, 42, 0.85);
+
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+/* Cuerdas superiores */
+.scoreboard-panel__ropes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2.5rem;
+  pointer-events: none;
+}
+
+.rope {
+  position: absolute;
+  top: -3rem;
+  width: 4px;
+  height: 4rem;
+  background: #102a6b;
+}
+
+.rope--left {
+  left: 20%;
+}
+
+.rope--right {
+  right: 20%;
+}
+
+.rope::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: #102a6b;
+}
+
+/* Cabecera amarilla */
+.scoreboard-panel__header {
+  padding-top: 0.2rem;
+  padding-bottom: 0.6rem;
+  text-align: center;
+}
+
+.scoreboard-title {
+  margin: 0;
+  font-size: 1.4rem;
+  letter-spacing: 0.12em;
+  text-shadow:
+    3px 3px 0 #102a6b,
+    5px 5px 0 rgba(0, 0, 0, 0.25);
+}
+
+/* Panel blanco interior */
+.scoreboard-panel__body {
+  margin-top: 0.4rem;
+  padding: 1.5rem 2rem;
+  border-radius: 1.5rem;
+  background: #ffffff;
+  border: 4px solid #102a6b;
+  box-shadow: inset 0 0 0 3px rgba(30, 64, 175, 0.25);
+}
+
+/* Lista de puntajes */
+.score-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.score-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  column-gap: 0.8rem;
+
+  font-family: "Press Start 2P", system-ui;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: #102a6b;
+}
+
+/* Nombre del jugador */
+.score-row__player {
+  white-space: nowrap;
+}
+
+/* Columna de puntos (···) */
+.score-row__dots {
+  position: relative;
+  height: 2px;
+}
+
+.score-row__dots::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  border-bottom: 3px dotted rgba(148, 163, 184, 0.9);
+  transform: translateY(-50%);
+}
+
+/* Puntaje */
+.score-row__score {
+  white-space: nowrap;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .scoreboard-panel {
+    padding: 2rem 1.4rem 1.8rem;
+    margin-top: 1.5rem;
+  }
+
+  .scoreboard-panel__body {
+    padding: 1.2rem 1rem;
+  }
+
+  .score-row {
+    font-size: 0.75rem;
+  }
+}

@@ -56,5 +56,11 @@ export const routes: Routes = [
   loadComponent: () =>
     import('./features/room/join/join').then(m => m.Join),
   },
+  {
+  path: 'quiz',
+  loadComponent: () =>
+    import('./features/quiz/quiz').then(m => m.Quiz),
+  },
+
 
 ];
