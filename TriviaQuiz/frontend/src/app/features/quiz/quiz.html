@@ -1,1 +1,39 @@
-<p>quiz works!</p>
+<!-- src/app/features/quiz/quiz.html -->
+<div class="game-bg">
+  <div class="game-bg__clouds"></div>
+
+  <div class="quiz-panel">
+    <!-- “Cuerdas” que sostienen el panel -->
+    <div class="quiz-panel__ropes">
+      <div class="rope rope--left"></div>
+      <div class="rope rope--right"></div>
+    </div>
+
+    <!-- Tarjeta de la pregunta -->
+    <div class="quiz-panel__question-card">
+      <h1 class="title-1 quiz-panel__question">
+        {{ question }}
+      </h1>
+    </div>
+
+    <!-- Timer circular -->
+    <div class="quiz-panel__timer">
+      <div class="timer-circle">
+        <span class="timer-circle__value">10</span>
+      </div>
+    </div>
+
+    <!-- Opciones -->
+    <div class="quiz-panel__answers">
+      <button
+        *ngFor="let option of options; let i = index"
+        type="button"
+        class="answer-btn"
+        [class.answer-btn--selected]="selectedIndex === i"
+        (click)="selectOption(i)"
+      >
+        {{ option }}
+      </button>
+    </div>
+  </div>
+</div>
