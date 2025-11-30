@@ -1,4 +1,3 @@
-// src/app/features/scoreboard/scoreboard.ts
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -15,7 +14,7 @@ interface PlayerScore {
   styleUrls: ['./scoreboard.scss'],
 })
 export class Scoreboard {
-  // Más adelante esto vendrá del backend
+  // Luego esto vendrá del backend
   players: PlayerScore[] = [
     { name: 'PLAYER 1', score: 980 },
     { name: 'PLAYER 2', score: 790 },

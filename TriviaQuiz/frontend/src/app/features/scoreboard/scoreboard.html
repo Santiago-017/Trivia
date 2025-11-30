@@ -1,37 +1,50 @@
-<!-- src/app/features/scoreboard/scoreboard.html -->
 <div class="game-bg">
   <div class="game-bg__clouds"></div>
 
-  <div class="scoreboard-panel">
-    <!-- Cuerdas que sostienen el cartel -->
-    <div class="scoreboard-panel__ropes">
-      <div class="rope rope--left"></div>
-      <div class="rope rope--right"></div>
+  <!-- WRAPPER CENTRADO: scoreboard + botón -->
+  <div class="scoreboard-wrapper">
+    <!-- CARTEL PRINCIPAL -->
+    <div class="scoreboard-panel">
+      <!-- Cuerdas que sostienen el cartel -->
+      <div class="scoreboard-panel__ropes">
+        <div class="rope rope--left"></div>
+        <div class="rope rope--right"></div>
+      </div>
+
+      <!-- Cabecera amarilla con título -->
+      <div class="scoreboard-panel__header">
+        <h1 class="title-1 scoreboard-title">SCOREBOARD</h1>
+      </div>
+
+      <!-- Panel blanco interior con puntajes -->
+      <div class="scoreboard-panel__body">
+        <ul class="score-list">
+          <li
+            class="score-row"
+            *ngFor="let player of players; let i = index"
+          >
+            <span class="score-row__player">
+              {{ player.name }}
+            </span>
+
+            <span class="score-row__dots"></span>
+
+            <span class="score-row__score">
+              {{ player.score }}
+            </span>
+          </li>
+        </ul>
+      </div>
     </div>
 
-    <!-- Cabecera amarilla con título -->
-    <div class="scoreboard-panel__header">
-      <h1 class="title-1 scoreboard-title">SCOREBOARD</h1>
-    </div>
-
-    <!-- Panel blanco interior con puntajes -->
-    <div class="scoreboard-panel__body">
-      <ul class="score-list">
-        <li
-          class="score-row"
-          *ngFor="let player of players; let i = index"
-        >
-          <span class="score-row__player">
-            {{ player.name }}
-          </span>
-
-          <span class="score-row__dots"></span>
-
-          <span class="score-row__score">
-            {{ player.score }}
-          </span>
-        </li>
-      </ul>
+    <!-- BOTÓN EXIT, CENTRADO BAJO EL CARTEL -->
+    <div class="scoreboard-exit">
+      <button
+        class="btn-nintendo scoreboard-exit__btn"
+        routerLink="/room/room-menu"
+      >
+        EXIT
+      </button>
     </div>
   </div>
 </div>
