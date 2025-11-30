@@ -31,7 +31,7 @@ export class Login {
         next: (res: any) => {
           this.loading = false;
           // el token ya se guardó en el servicio (tap)
-          this.router.navigate(['/menu']); // o '/lobby', '/home', etc. [web:158][web:167]
+          this.router.navigate(['/room/room-menu']); // o '/lobby', '/home', etc. [web:158][web:167]
         },
         error: (err: any) => {
           this.loading = false;

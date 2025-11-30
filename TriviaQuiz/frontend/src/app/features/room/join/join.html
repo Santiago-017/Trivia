@@ -17,15 +17,26 @@
         class="join-input"
         placeholder="ROOM CODE"
         maxlength="8"
+        [(ngModel)]="sessionId"
+        name="sessionId"
       />
 
-      <button class="btn-nintendo join-panel__btn">
-        JOIN ROOM
+      <button
+        class="btn-nintendo join-panel__btn"
+        type="button"
+        (click)="joinSession()"
+        [disabled]="!sessionId || loading"
+      >
+        {{ loading ? 'JOINING...' : 'JOIN ROOM' }}
       </button>
     </div>
 
     <button class="join-panel__back" routerLink="/room/room-menu">
       ← BACK TO ROOMS
     </button>
+
+    <div class="error" *ngIf="error">
+      {{ error }}
+    </div>
   </div>
 </div>

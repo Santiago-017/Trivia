@@ -1,7 +1,8 @@
 // src/app/features/room/create/create.ts
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
+import { Session } from '../../../services/session';
 
 @Component({
   selector: 'app-create',
@@ -11,16 +12,20 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./create.scss'],
 })
 export class Create {
-  // # PLAYERS
+
+  loading = false;
+  error = "";
+
+  // PLAYERS
   players = 4;
   readonly minPlayers = 1;
   readonly maxPlayers = 8;
 
   // DIFFICULTY
-  difficulties = ['EASY', 'MEDIUM', 'HARD'];
+  difficulties = ['easy', 'medium', 'hard'];
   difficultyIndex = 0;
 
-  // # QUESTIONS
+  // QUESTIONS
   questions = 9;
   readonly minQuestions = 3;
   readonly maxQuestions = 25;
@@ -30,39 +35,56 @@ export class Create {
   categories = ['GENERAL', 'SCIENCE', 'HISTORY', 'SPORTS'];
   categoryIndex = 0;
 
-  changePlayers(delta: number): void {
+  constructor(
+    private router: Router, 
+    private sessionService: Session
+  ) {}
+
+  changePlayers(delta: number) {
     const next = this.players + delta;
     if (next >= this.minPlayers && next <= this.maxPlayers) {
       this.players = next;
     }
   }
 
-  changeDifficulty(delta: number): void {
+  changeDifficulty(delta: number) {
     const len = this.difficulties.length;
     this.difficultyIndex = (this.difficultyIndex + delta + len) % len;
   }
 
-  changeQuestions(delta: number): void {
+  changeQuestions(delta: number) {
     const next = this.questions + delta * this.questionsStep;
     if (next >= this.minQuestions && next <= this.maxQuestions) {
       this.questions = next;
     }
   }
 
-  changeCategory(delta: number): void {
+  changeCategory(delta: number) {
     const len = this.categories.length;
     this.categoryIndex = (this.categoryIndex + delta + len) % len;
   }
 
-  // Luego aquí podrás armar el payload para el backend
-  onCreateRoom(): void {
-    const payload = {
+  // FINAL METHOD TO CREATE THE SESSION
+  createSession() {
+    this.loading = true;
+    this.error = "";
+
+    const dto = {
       players: this.players,
       difficulty: this.difficulties[this.difficultyIndex],
       questions: this.questions,
-      category: this.categories[this.categoryIndex],
+      category: this.categories[this.categoryIndex]
     };
-    console.log('Room config:', payload);
-    // TODO: llamar al microservicio y navegar a la sala
+
+    this.sessionService.create(dto).subscribe({
+      next: (resp: any) => {
+        this.loading = false;
+        this.router.navigate([`/quiz/${resp.session.game_code}`]);
+      },
+      error: (err) => {
+        this.loading = false;
+        this.error = err.error?.msg ?? "Error creating session";
+      }
+    });
   }
 }
