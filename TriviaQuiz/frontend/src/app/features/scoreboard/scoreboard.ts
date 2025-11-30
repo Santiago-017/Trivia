@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 interface PlayerScore {
   name: string;
@@ -9,7 +10,7 @@ interface PlayerScore {
 @Component({
   selector: 'app-scoreboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,RouterLink],
   templateUrl: './scoreboard.html',
   styleUrls: ['./scoreboard.scss'],
 })
