@@ -7,5 +7,7 @@ router.post('/:sessionId/questions', controller.addQuestions);
 router.post('/:sessionId/join', controller.join);
 router.post('/:sessionId/answer', controller.recordAnswer);
 router.post('/:sessionId/start', controller.start);
+router.post('/join-by-code', controller.joinByCode);
+
 
 module.exports = router;
