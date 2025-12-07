@@ -150,6 +150,7 @@ class SessionService {
       firstQuestion: first
     };
   }
+<<<<<<< HEAD
   async getNextQuestion(sessionId, currentQuestionOrder) {
     const session = await SessionModel.findByPk(sessionId);
     if (!session) {
@@ -164,6 +165,32 @@ class SessionService {
     console.log("Next question found:", question);
 
   }
+=======
+async joinSessionByCode(gameCode, userId, nickname) {
+  const session = await SessionModel.findOne({ where: { game_code: gameCode } });
+  if (!session) throw new Error('Session not found');
+
+  const currentPlayers = await SessionPlayerModel.count({
+    where: { session_id: session.session_id } // o session.id según tu modelo
+  });
+
+  if (currentPlayers >= session.max_players) {
+    throw new Error('Session is full');
+  }
+
+  const sp = await SessionPlayerModel.create({
+    session_id: session.session_id, // o session.id
+    user_id: userId,
+    joinedAt: new Date(),
+    score: 0,
+    active: true,
+    nickname
+  });
+
+  return { session, player: sp };
+}
+
+>>>>>>> a9f10c90351f57fa2c496e880fda8cc1efebf2e9
 }
 
 module.exports = new SessionService();
