@@ -104,8 +104,8 @@ class SessionService {
     const url = `https://opentdb.com/api.php?amount=${amount}&category=${categoryId}&difficulty=${difficulty}&type=multiple`;
     const apiResp = await fetch(url);
     const data = await apiResp.json();
-    console.log("API RESPONSE RAW:", data);
-    console.log("API RESULTS:", data.results);
+    //console.log("API RESPONSE RAW:", data);
+    //console.log("API RESULTS:", data.results);
 
     if (!data.results || data.results.length === 0) {
       throw new Error('No questions found from API');
@@ -149,6 +149,20 @@ class SessionService {
       status: "started",
       firstQuestion: first
     };
+  }
+  async getNextQuestion(sessionId, currentQuestionOrder) {
+    const session = await SessionModel.findByPk(sessionId);
+    if (!session) {
+      throw new Error('Session not found');
+    }
+    console.log("Fetching next question for session:", sessionId, "after order:", currentQuestionOrder);
+    const question= await SessionQuestionModel.findOne({
+      where: {        
+        questionOrder: parseInt(currentQuestionOrder) 
+      }
+    });
+    console.log("Next question found:", question);
+
   }
 }
 

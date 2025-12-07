@@ -16,7 +16,7 @@ export class Quiz {
   question = '';
   options: string[] = [];
   selectedIndex: number | null = null;
-
+  currentQuestionOrder = 0;
   sessionId = 1; // <- luego se reemplaza por la real de la sala creada
 
   interval: any;
@@ -52,12 +52,41 @@ export class Quiz {
       if (this.timer === 0) {
         clearInterval(this.interval);
         this.selectedIndex = null;
-        // Aquí puedes avanzar a la siguiente pregunta
+        this.goToNextQuestion();
       }
     }, 1000);
+  }
+  loadQuestion(data : any) {
+    const q = data.question || data.firstQuestion;
+    if (!q) {
+      this.question = "juego terminado";
+      this.options = [];
+      this.gameStarted = false;
+      return;
+    }
+    this.question = q.payload.question;
+    this.options = q.payload.options;
+    this.startTimer();
+  }
+  goToNextQuestion() {
+    this.currentQuestionOrder++;
+    this.sessionService.nextQuestion(this.sessionId, this.currentQuestionOrder).subscribe({
+      next: (resp: any) => {
+        if (resp.status === 'finished') {
+          this.question = "El juego ha terminado.";
+          this.options = [];
+          this.gameStarted = false;
+          return;
+        }
+        this.loadQuestion(resp);
+      },
+      error: (err) => console.error(err),
+    });
   }
 
   selectOption(index: number) {
     this.selectedIndex = index;
+    clearInterval(this.interval);
+    this.goToNextQuestion();
   }
 }

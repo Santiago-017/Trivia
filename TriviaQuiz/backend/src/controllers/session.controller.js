@@ -48,3 +48,34 @@ exports.start = async (req, res) => {
     res.status(500).json({ error: "Error al iniciar juego" });
   }
 };
+exports.nextQuestion = async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    const { currentQuestionOrder } = req.query; // <-- AQUÍ SE TOMA EL ORDEN
+
+    const result = await SessionService.getNextQuestion(sessionId, currentQuestionOrder);
+
+    res.json({ ok: true, ...result });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ ok: false, msg: err.message });
+  }
+};
+
+exports.answerQuestion = async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    const { sessionQuestionId, givenAnswer, responseTimeMs } = req.body;
+    const result = await SessionService.answerQuestion(
+      sessionId,
+      sessionQuestionId,
+      req.user.id,
+      givenAnswer,
+      responseTimeMs
+    );
+    res.json({ ok: true, ...result });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ ok: false, msg: err.message });
+  }
+};

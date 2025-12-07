@@ -1,4 +1,3 @@
-
 require('dotenv').config();
 console.log("JWT_SECRET:", process.env.JWT_SECRET);
 const express = require('express');
@@ -28,13 +27,19 @@ const io = new Server(server, {
   cors: { origin: '*' }
 });
 
-// socket event handlers
 const socketHandler = require('./sockets/socket.handler');
 socketHandler(io);
 
 const PORT = process.env.PORT || 3000;
-sequelize.sync({ alter: true }).then(() => {
-  server.listen(PORT, "0.0.0.0" ,() => console.log('Server running on', PORT));
-}).catch(err => {
-  console.error('DB connection failed:', err);
-});
+
+// ❗ IMPORTANTE: NO USAR sync(), SOLO authenticate()
+sequelize.authenticate()
+  .then(() => {
+    console.log('Database connection established successfully.');
+    server.listen(PORT, "0.0.0.0", () =>
+      console.log('Server running on', PORT)
+    );
+  })
+  .catch(err => {
+    console.error('DB connection failed:', err);
+  });
