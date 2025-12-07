@@ -91,17 +91,13 @@ exports.start = async (req, res) => {
     res.status(500).json({ error: 'Error al iniciar juego' });
   }
 };
-exports.nextQuestion = async (req, res) => {
+exports.getNextQuestion = async (req, res) => {
   try {
-    const { sessionId } = req.params;
-    const { currentQuestionOrder } = req.query; // <-- AQUÍ SE TOMA EL ORDEN
-
-    const result = await SessionService.getNextQuestion(sessionId, currentQuestionOrder);
-
-    res.json({ ok: true, ...result });
-  } catch (err) {
-    console.error(err);
-    res.status(400).json({ ok: false, msg: err.message });
+    const { sessionId, currentQuestionOrder } = req.params;
+    const data = await SessionService.getNextQuestion(sessionId, currentQuestionOrder);
+    res.json({ ok: true, ...data });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 };
 
@@ -122,3 +118,13 @@ exports.answerQuestion = async (req, res) => {
     res.status(400).json({ ok: false, msg: err.message });
   }
 };
+exports.getNextQuestionByCode = async (req, res) => {
+  try {
+    const { gameCode, currentQuestionOrder } = req.params;
+    const data = await SessionService.getNextQuestionByCode(gameCode, currentQuestionOrder);
+    res.json({ ok: true, ...data });
+  } catch (error) {
+    res.status(400).json({ ok: false, msg: error.message });
+  }
+};
+

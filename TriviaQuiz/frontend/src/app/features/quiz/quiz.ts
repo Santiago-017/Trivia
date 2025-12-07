@@ -1,8 +1,10 @@
+// src/app/pages/quiz/quiz.ts
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Session } from '../../services/session';
 import { SocketService } from '../../services/socket.service';
 import { Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-quiz',
@@ -14,47 +16,54 @@ import { Subscription } from 'rxjs';
 export class Quiz implements OnInit, OnDestroy {
   gameStarted = false;
   timer = 10;
+  timerId: any;
 
-  question = '';
+  question: any = null;
   options: string[] = [];
   selectedIndex: number | null = null;
 
-  // Estos deberían venir del router o de otro servicio
-  sessionId = 1;          // TODO: reemplazar por el id real de la sala
-  userId = 1;             // TODO: id real del usuario logueado
-  nickname = 'Jugador';   // TODO: nickname real
+  sessionId!: number | string;
+  gameCode!: string;
+  isHost = false;
 
-  interval: any;
-  private subs: Subscription[] = [];
+  currentQuestionOrder = 1; // el backend usa este "order"
+  subs: Subscription[] = [];
 
   constructor(
     private sessionService: Session,
-    private socketService: SocketService
+    private socketService: SocketService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    // 1. Unirse al "room" de sockets para recibir eventos en tiempo real
-    this.socketService.joinSession(this.sessionId, this.userId, this.nickname);
+    // 1. Recuperar la sesión y datos básicos
+    this.sessionId = this.route.snapshot.paramMap.get('sessionId')!;
+    this.gameCode = localStorage.getItem('gameCode') || '';
+    this.isHost = localStorage.getItem('isHost') === 'true';
 
-    // 2. Escuchar cuando el servidor diga que la sesión comenzó
+    const nickname = localStorage.getItem('nickname') || 'Jugador';
+    const userIdStr = localStorage.getItem('userId');
+    const userId = userIdStr ? Number(userIdStr) : this.sessionId;
+
+    // 2. Unirse a la sala de sockets por gameCode
+    if (this.gameCode) {
+      this.socketService.joinSession(this.gameCode, userId, nickname);
+    }
+
+    // 3. Escuchar nuevas preguntas por sockets
     this.subs.push(
-      this.socketService.onSessionStarted().subscribe((data: any) => {
-        this.gameStarted = true;
-
-        const q = data.firstQuestion?.payload ?? data.firstQuestion;
-        this.setQuestionFromPayload(q);
+      this.socketService.onNewQuestion().subscribe((q: any) => {
+        this.setQuestion(q);
       })
     );
 
-    // 3. Escuchar nuevas preguntas
-    this.subs.push(
-      this.socketService.onNewQuestion().subscribe((data: any) => {
-        const q = data.payload ?? data;
-        this.setQuestionFromPayload(q);
-      })
-    );
+    // 4. Si soy el HOST, arranco la partida
+    if (this.isHost) {
+      this.startGameAsHost();
+    }
 
-    // 4. Escuchar cuando algún jugador responda (para marcador, etc.)
+    // 5. (Opcional) escuchar respuestas
     this.subs.push(
       this.socketService.onPlayerAnswered().subscribe((info: any) => {
         console.log('Respuesta de un jugador:', info);
@@ -63,93 +72,103 @@ export class Quiz implements OnInit, OnDestroy {
     );
   }
 
-  ngOnDestroy(): void {
-    this.subs.forEach((s) => s.unsubscribe());
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
+  // HOST: cargar primera pregunta y avisar por sockets
+  startGameAsHost() {
+    this.gameStarted = true;
+    this.currentQuestionOrder = 0;
+
+    this.sessionService
+      .nextQuestion(this.sessionId, this.currentQuestionOrder)
+      .subscribe((res: any) => {
+        // ajusta a la estructura real que devuelve tu back
+        if (res.finished) {
+          this.router.navigate(['/scoreboard', this.sessionId]);
+          return;
+        }
+
+        const question = res.question || res; // depende de cómo responda el back
+        this.setQuestion(question);
+
+        // avisar a todos los clientes
+        if (this.gameCode) {
+          this.socketService.sendNextQuestion(this.gameCode, question);
+        }
+      });
   }
 
-  // HOST: inicia el juego.
-  // 1) HTTP -> crea preguntas en BD (llama a la API externa)
-  // 2) Socket -> avisa a todos que la sesión comenzó
-  startGame() {
-    this.sessionService.start(this.sessionId).subscribe({
-      next: (resp: any) => {
-        this.gameStarted = true;
+  // Mostrar pregunta + arrancar contador
+  setQuestion(question: any) {
+    this.question = question;
+    this.options = question.options || question.incorrect_answers
+      ? [question.correct_answer, ...question.incorrect_answers]
+      : question.options;
 
-        const q = resp.firstQuestion?.payload;
-        this.setQuestionFromPayload(q);
-
-        console.log('RESPUESTA DEL BACK:', resp);
-        console.log('PRIMERA PREGUNTA:', resp.firstQuestion.payload.question);
-
-        // Notificar a los demás jugadores que la sesión ha comenzado
-        this.socketService.startSession(this.sessionId);
-      },
-      error: (err) => console.error(err),
-    });
-  }
-
-  private setQuestionFromPayload(q: any) {
-    this.question = q?.question || '';
-    this.options = q?.options || [];
+    this.selectedIndex = null;
     this.startTimer();
   }
 
   startTimer() {
+    if (this.timerId) {
+      clearInterval(this.timerId);
+    }
     this.timer = 10;
 
-    if (this.interval) clearInterval(this.interval);
-
-    this.interval = setInterval(() => {
+    this.timerId = setInterval(() => {
       this.timer--;
-
-      if (this.timer === 0) {
-        clearInterval(this.interval);
-        this.selectedIndex = null;
-        this.goToNextQuestion();
+      if (this.timer <= 0) {
+        clearInterval(this.timerId);
+        // cuando se acaba el tiempo el HOST puede avanzar de pregunta
+        if (this.isHost) {
+          this.nextQuestion();
+        }
       }
     }, 1000);
   }
-  loadQuestion(data : any) {
-    const q = data.question || data.firstQuestion;
-    if (!q) {
-      this.question = "juego terminado";
-      this.options = [];
-      this.gameStarted = false;
-      return;
-    }
-    this.question = q.payload.question;
-    this.options = q.payload.options;
-    this.startTimer();
-  }
-  goToNextQuestion() {
+
+  // Solo el HOST debería llamar a esto realmente
+  nextQuestion() {
     this.currentQuestionOrder++;
-    this.sessionService.nextQuestion(this.sessionId, this.currentQuestionOrder).subscribe({
-      next: (resp: any) => {
-        if (resp.status === 'finished') {
-          this.question = "El juego ha terminado.";
-          this.options = [];
-          this.gameStarted = false;
+
+    this.sessionService
+      .nextQuestion(this.sessionId, this.currentQuestionOrder)
+      .subscribe((res: any) => {
+        if (res.finished) {
+          this.router.navigate(['/scoreboard', this.sessionId]);
           return;
         }
-        this.loadQuestion(resp);
-      },
-      error: (err) => console.error(err),
-    });
+
+        const question = res.question || res;
+        this.setQuestion(question);
+
+        if (this.gameCode) {
+          this.socketService.sendNextQuestion(this.gameCode, question);
+        }
+      });
   }
 
+  // Cuando el jugador selecciona una opción
   selectOption(index: number) {
     this.selectedIndex = index;
-<<<<<<< HEAD
-    clearInterval(this.interval);
-    this.goToNextQuestion();
-=======
-    // Más adelante:
-    // - mandar la respuesta al backend por HTTP (/sessions/:id/answer)
-    // - emitirla por sockets: this.socketService.sendAnswer(...)
->>>>>>> a9f10c90351f57fa2c496e880fda8cc1efebf2e9
+
+    // ejemplo: mandar la respuesta por sockets
+    if (this.gameCode) {
+      this.socketService.sendAnswer(this.gameCode, {
+        sessionId: this.sessionId,
+        questionOrder: this.currentQuestionOrder,
+        optionIndex: index,
+      });
+    }
+
+    // si quieres que solo el host avance:
+    if (this.isHost) {
+      this.nextQuestion();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach((s) => s.unsubscribe());
+    if (this.timerId) {
+      clearInterval(this.timerId);
+    }
   }
 }
-

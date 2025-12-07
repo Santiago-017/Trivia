@@ -41,15 +41,10 @@ class SessionService {
   }
 
   async joinSession(sessionId, userId, nickname) {
-    const session = await SessionModel.findByPk(sessionId);
-    if (!session) throw new Error('Session not found');
-
     const currentPlayers = await SessionPlayerModel.count({ where: { session_id: sessionId } });
-
     if (currentPlayers >= session.max_players) {
       throw new Error('Session is full');
-    }
-
+  }
     const sp = await SessionPlayerModel.create({
       session_id: sessionId,
       user_id: userId,
@@ -150,47 +145,92 @@ class SessionService {
       firstQuestion: first
     };
   }
-<<<<<<< HEAD
   async getNextQuestion(sessionId, currentQuestionOrder) {
-    const session = await SessionModel.findByPk(sessionId);
-    if (!session) {
-      throw new Error('Session not found');
-    }
-    console.log("Fetching next question for session:", sessionId, "after order:", currentQuestionOrder);
-    const question= await SessionQuestionModel.findOne({
-      where: {        
-        questionOrder: parseInt(currentQuestionOrder) 
-      }
-    });
-    console.log("Next question found:", question);
-
+  const session = await SessionModel.findByPk(sessionId);
+  if (!session) {
+    throw new Error('Session not found');
   }
-=======
-async joinSessionByCode(gameCode, userId, nickname) {
-  const session = await SessionModel.findOne({ where: { game_code: gameCode } });
-  if (!session) throw new Error('Session not found');
 
+  const nextOrder = parseInt(currentQuestionOrder) + 1;
+
+  console.log("Buscando siguiente pregunta:", nextOrder);
+
+  const nextQuestion = await SessionQuestionModel.findOne({
+    where: { 
+      session_id: sessionId,
+      questionOrder: nextOrder
+    },
+    order: [['questionOrder', 'ASC']]
+  });
+
+  if (!nextQuestion) {
+    console.log("✅ Fin del juego");
+    session.status = 'finished';
+    await session.save();
+
+    return {
+      finished: true,
+      message: "Juego terminado"
+    };
+  }
+
+  return {
+    finished: false,
+    question: nextQuestion
+  };
+}
+
+async joinSessionByCode(gameCode, userId, nickname) {
+  // 1. Buscar la sesión por game_code
+  const session = await SessionModel.findOne({ where: { game_code: gameCode } });
+
+  if (!session) {
+    throw new Error('Session not found');
+  }
+
+  // 👇 AQUÍ ESTABA EL PROBLEMA
+  // Tu modelo tiene "session_id", no "id"
+  const sessionId = session.session_id; 
+
+  if (sessionId == null) {
+    console.error('⚠️ session.session_id es null/undefined. Session encontrado:', session);
+    throw new Error('Invalid session id');
+  }
+
+  // 2. Contar jugadores en esa sesión
   const currentPlayers = await SessionPlayerModel.count({
-    where: { session_id: session.session_id } // o session.id según tu modelo
+    where: { sessionId: sessionId } // atributo JS de SessionPlayer
   });
 
   if (currentPlayers >= session.max_players) {
     throw new Error('Session is full');
   }
 
-  const sp = await SessionPlayerModel.create({
-    session_id: session.session_id, // o session.id
-    user_id: userId,
+  // 3. Crear jugador
+  const player = await SessionPlayerModel.create({
+    sessionId: sessionId,    // FK hacia Session (session_id en BD si lo mapeaste así)
+    userId: userId,
     joinedAt: new Date(),
     score: 0,
     active: true,
     nickname
   });
 
-  return { session, player: sp };
+  // 4. Devolver ambos objetos
+  return { session, player };
 }
 
->>>>>>> a9f10c90351f57fa2c496e880fda8cc1efebf2e9
+async getNextQuestionByCode(gameCode, currentQuestionOrder) {
+  // 1. Buscar la sesión por game_code
+  const session = await SessionModel.findOne({ where: { game_code: gameCode } });
+  if (!session) {
+    throw new Error('Session not found');
+  }
+
+  // 2. Reusar la lógica existente con el id interno
+  return this.getNextQuestion(session.id, currentQuestionOrder);
+}
+
 }
 
 module.exports = new SessionService();

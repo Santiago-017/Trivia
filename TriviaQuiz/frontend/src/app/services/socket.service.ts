@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,54 +11,68 @@ export class SocketService {
   private socket: Socket;
 
   constructor() {
-    // Cambia la URL por la de tu backend
-    this.socket = io('http://localhost:3000', {
-      // si usas JWT en headers/cookies, puedes ajustar opciones aquí
+    // Usa la misma URL del backend (puedes dejar localhost si quieres)
+    this.socket = io(environment.wsUrl, {
       withCredentials: true
     });
   }
 
-  // === EMITIR EVENTOS ===
-
-  joinSession(sessionId: number, userId: number, nickname: string) {
-    this.socket.emit('joinSession', { sessionId, userId, nickname });
+  // 🔹 Unirse a la sala usando el gameCode
+  joinSession(gameCode: string, userId: number | string, nickname: string) {
+    this.socket.emit('joinSession', { gameCode, userId, nickname });
   }
 
-  startSession(sessionId: number) {
-    this.socket.emit('startSession', { sessionId });
+  // 🔹 El host anuncia que comienza la partida
+  startSession(gameCode: string) {
+    this.socket.emit('startSession', { gameCode });
   }
 
-  sendAnswer(payload: {
-    sessionId: number;
-    sessionQuestionId: number;
-    userId: number;
-    givenAnswer: string;
-    responseTimeMs: number;
-  }) {
-    this.socket.emit('answer', payload);
+  // 🔹 El host manda la nueva pregunta al resto
+  sendNextQuestion(gameCode: string, question: any) {
+    this.socket.emit('nextQuestion', { gameCode, question });
   }
 
-  // === ESCUCHAR EVENTOS DEL SERVIDOR ===
+  // 🔹 Un jugador envía su respuesta
+  sendAnswer(gameCode: string, payload: any) {
+    this.socket.emit('answer', { gameCode, ...payload });
+  }
 
+  // Escuchar inicio de partida
   onSessionStarted(): Observable<any> {
     return new Observable((subscriber) => {
-      this.socket.on('sessionStarted', (data) => subscriber.next(data));
+      const handler = (data: any) => subscriber.next(data);
+      this.socket.on('sessionStarted', handler);
+      return () => this.socket.off('sessionStarted', handler);
     });
   }
 
+  // Escuchar nueva pregunta
   onNewQuestion(): Observable<any> {
     return new Observable((subscriber) => {
-      this.socket.on('newQuestion', (data) => subscriber.next(data));
+      const handler = (question: any) => subscriber.next(question);
+      this.socket.on('newQuestion', handler);
+      return () => this.socket.off('newQuestion', handler);
     });
   }
 
+  // Escuchar cuando entra un jugador
+  onPlayerJoined(): Observable<any> {
+    return new Observable((subscriber) => {
+      const handler = (data: any) => subscriber.next(data);
+      this.socket.on('playerJoined', handler);
+      return () => this.socket.off('playerJoined', handler);
+    });
+  }
+
+  // Escuchar respuestas de jugadores (para scoreboard en tiempo real)
   onPlayerAnswered(): Observable<any> {
     return new Observable((subscriber) => {
-      this.socket.on('playerAnswered', (data) => subscriber.next(data));
+      const handler = (data: any) => subscriber.next(data);
+      this.socket.on('playerAnswered', handler);
+      return () => this.socket.off('playerAnswered', handler);
     });
   }
 
-  // opcional
   disconnect() {
     this.socket.disconnect();
   }

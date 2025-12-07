@@ -1,27 +1,41 @@
-
 module.exports = (io) => {
   io.on('connection', (socket) => {
     console.log('socket connected:', socket.id);
 
     socket.on('joinSession', (data) => {
-      // data: { sessionId, userId, nickname }
-      socket.join(data.sessionId);
-      io.to(data.sessionId).emit('playerJoined', { userId: data.userId, nickname: data.nickname });
+      // data: { gameCode?, sessionId?, userId, nickname }
+      const room = data.gameCode || data.sessionId;
+      if (!room) return;
+
+      socket.join(room);
+      io.to(room).emit('playerJoined', {
+        userId: data.userId,
+        nickname: data.nickname
+      });
     });
 
     socket.on('startSession', (data) => {
-      // data: { sessionId }
-      io.to(data.sessionId).emit('sessionStarted', { sessionId: data.sessionId });
+      // data: { gameCode?, sessionId? }
+      const room = data.gameCode || data.sessionId;
+      if (!room) return;
+
+      io.to(room).emit('sessionStarted', { room });
     });
 
     socket.on('nextQuestion', (data) => {
-      // data: { sessionId, question }
-      io.to(data.sessionId).emit('newQuestion', data.question);
+      // data: { gameCode?, sessionId?, question }
+      const room = data.gameCode || data.sessionId;
+      if (!room) return;
+
+      io.to(room).emit('newQuestion', data.question);
     });
 
     socket.on('answer', (data) => {
-      // data: { sessionId, sessionQuestionId, userId, givenAnswer, responseTimeMs }
-      io.to(data.sessionId).emit('playerAnswered', data);
+      // data: { gameCode?, sessionId?, ... }
+      const room = data.gameCode || data.sessionId;
+      if (!room) return;
+
+      io.to(room).emit('playerAnswered', data);
     });
 
     socket.on('disconnect', () => {

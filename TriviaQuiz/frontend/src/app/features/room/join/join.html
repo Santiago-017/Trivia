@@ -8,24 +8,37 @@
     </h1>
 
     <p class="join-panel__subtitle">
-      ENTER THE ROOM CODE SHARED BY YOUR FRIEND.
+      ENTER THE ROOM CODE AND YOUR NICKNAME.
     </p>
 
     <div class="join-panel__form">
+
+      <!-- NICKNAME -->
+      <input
+        type="text"
+        class="join-input"
+        placeholder="NICKNAME"
+        maxlength="20"
+        [(ngModel)]="nickname"
+        name="nickname"
+      />
+
+      <!-- ROOM CODE -->
       <input
         type="text"
         class="join-input"
         placeholder="ROOM CODE"
         maxlength="8"
-        [(ngModel)]="sessionId"
-        name="sessionId"
+        [(ngModel)]="gameCode"
+        name="gameCode"
       />
 
+      <!-- JOIN BUTTON -->
       <button
         class="btn-nintendo join-panel__btn"
         type="button"
         (click)="joinSession()"
-        [disabled]="!sessionId || loading"
+        [disabled]="!gameCode || !nickname || loading"
       >
         {{ loading ? 'JOINING...' : 'JOIN ROOM' }}
       </button>
