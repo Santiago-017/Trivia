@@ -7,14 +7,15 @@ exports.createSession = async (req, res) => {
       hostId,
       category: req.body.category,
       difficulty: req.body.difficulty,
-      numQuestions: req.body.numQuestions,
-      maxPlayers: req.body.maxPlayers
+      numQuestions: req.body.questions,
+      maxPlayers: req.body.players
     });
     res.json({ ok: true, session: doc });
   } catch (err) {
     res.status(400).json({ ok: false, msg: err.message });
     console.log(err);
   }
+  console.log("createSession called", req.body.questions);
 };
 
 exports.addQuestions = async (req, res) => {
@@ -95,9 +96,10 @@ exports.getNextQuestion = async (req, res) => {
   try {
     const { sessionId, currentQuestionOrder } = req.params;
     const data = await SessionService.getNextQuestion(sessionId, currentQuestionOrder);
-    res.json({ ok: true, ...data });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.json(data); // { finished: true/false, question?: {...} }
+  } catch (err) {
+    console.error('Error en getNextQuestion:', err);
+    res.status(400).json({ error: err.message });
   }
 };
 
