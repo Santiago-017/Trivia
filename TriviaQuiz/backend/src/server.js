@@ -1,3 +1,4 @@
+// backend/src/server.js
 require('dotenv').config();
 console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
@@ -14,7 +15,7 @@ const socketHandler = require('./sockets/socket.handler');
 
 const app = express();
 
-// ✅ CORS SOLO UNA VEZ Y BIEN CONFIGURADO
+// --------- MIDDLEWARES BÁSICOS ----------
 app.use(cors({
   origin: "http://localhost:4200",
   credentials: true,
@@ -23,37 +24,42 @@ app.use(cors({
 
 app.use(express.json());
 
-// ✅ Routes
-app.use('/auth', authRoutes);
+// --------- RUTAS HTTP ----------
+app.use('/auth', authRoutes);                 // /auth/register, /auth/login
 app.use('/sessions', jwtMiddleware, sessionRoutes);
 
-// ✅ Health check
-app.get('/', (req, res) => res.send('Trivia Backend (MySQL) running'));
+app.get('/', (req, res) => {
+  res.send('Trivia Backend (MySQL) running');
+});
 
-// ✅ Server + Socket.io con CORS CORRECTO
+// --------- HTTP SERVER + SOCKET.IO ----------
 const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:4200", // ✅ NUNCA USAR "*"
+    origin: "http://localhost:4200",
     credentials: true,
     methods: ["GET", "POST"]
   }
 });
 
-// ✅ Conectar tu handler
 socketHandler(io);
 
 const PORT = process.env.PORT || 3000;
 
-// ❗ SOLO authenticate (bien hecho ✅)
-sequelize.authenticate()
-  .then(() => {
-    console.log('Database connection established successfully.');
-    server.listen(PORT, "0.0.0.0", () =>
-      console.log('Server running on', PORT)
-    );
-  })
-  .catch(err => {
-    console.error('DB connection failed:', err);
-  });
+// --------- ARRANQUE (SOLO FUERA DE TEST) ----------
+if (process.env.NODE_ENV !== 'test') {
+  sequelize.authenticate()
+    .then(() => {
+      console.log('Database connection established successfully.');
+      server.listen(PORT, "0.0.0.0", () =>
+        console.log('Server running on', PORT)
+      );
+    })
+    .catch(err => {
+      console.error('DB connection failed:', err);
+    });
+}
+
+// 👈 Esto es lo que usa supertest en los tests
+module.exports = app;
