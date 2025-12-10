@@ -1,6 +1,10 @@
 // tests/integration/auth.integration.test.js
+
+const express = require('express');
 const request = require('supertest');
-const app = require('../../src/server');
+
+// En lugar de importar server.js, creamos una app de prueba
+const authRoutes = require('../../src/routes/auth.routes');
 
 // Mock del modelo de usuario
 jest.mock('../../src/infrastructure/models/user.model', () => ({
@@ -15,9 +19,20 @@ const jwt = require('jsonwebtoken');
 jest.mock('bcrypt');
 jest.mock('jsonwebtoken');
 
+// 👉 Creamos la mini app de Express SOLO PARA LOS TESTS
+function createTestApp() {
+  const app = express();
+  app.use(express.json());
+  app.use('/auth', authRoutes);   // mismas rutas que en server.js
+  return app;
+}
+
 describe('Auth integration', () => {
+  let app;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    app = createTestApp();   // nueva app limpia para cada test
   });
 
   test('POST /auth/register -> 200 y devuelve usuario', async () => {
