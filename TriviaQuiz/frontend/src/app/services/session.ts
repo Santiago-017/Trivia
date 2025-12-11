@@ -40,11 +40,11 @@ export class Session {
   }
 
   // Iniciar la sesión (HOST)
-  start(sessionId: number | string): Observable<any> {
+  start(gameCode: string): Observable<any> {
     // POST http://IP:3000/sessions/:id/start
-    console.log('Starting session with ID:', sessionId);
+    console.log('Starting session with gameCode:', gameCode);
     return this.http.post(
-      `${environment.wsUrl}/sessions/${sessionId}/start`,
+      `${environment.wsUrl}/sessions/${gameCode}/start`,
       {}
     );
   }

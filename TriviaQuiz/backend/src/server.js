@@ -1,4 +1,3 @@
-// backend/src/server.js
 require('dotenv').config();
 console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
@@ -6,7 +5,10 @@ const express = require('express');
 const http = require('http');
 const cors = require('cors');
 const { Server } = require('socket.io');
+
+// 👇 Importa sequelize y **los modelos+relaciones**
 const { sequelize } = require('./setup/database');
+require('./infrastructure/models'); // <- importante: solo con requerirlo se registran los modelos y asociaciones
 
 const authRoutes = require('./routes/auth.routes');
 const sessionRoutes = require('./routes/session.routes');
@@ -25,7 +27,7 @@ app.use(cors({
 app.use(express.json());
 
 // --------- RUTAS HTTP ----------
-app.use('/auth', authRoutes);                 // /auth/register, /auth/login
+app.use('/auth', authRoutes);
 app.use('/sessions', jwtMiddleware, sessionRoutes);
 
 app.get('/', (req, res) => {
@@ -49,17 +51,23 @@ const PORT = process.env.PORT || 3000;
 
 // --------- ARRANQUE (SOLO FUERA DE TEST) ----------
 if (process.env.NODE_ENV !== 'test') {
-  sequelize.authenticate()
-    .then(() => {
+  (async () => {
+    try {
+      await sequelize.authenticate();
       console.log('Database connection established successfully.');
+
+      // 👇 AQUÍ se crean/actualizan las tablas según tus modelos
+      await sequelize.sync(); // o sequelize.sync({ alter: true }) mientras desarrollas
+      console.log('Models synchronized with database.');
+
       server.listen(PORT, "0.0.0.0", () =>
         console.log('Server running on', PORT)
       );
-    })
-    .catch(err => {
-      console.error('DB connection failed:', err);
-    });
+    } catch (err) {
+      console.error('DB init failed:', err);
+    }
+  })();
 }
 
-// 👈 Esto es lo que usa supertest en los tests
+// Supertest usa esto
 module.exports = app;

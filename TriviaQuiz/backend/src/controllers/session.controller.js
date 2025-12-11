@@ -84,8 +84,9 @@ exports.recordAnswer = async (req, res) => {
 
 exports.start = async (req, res) => {
   try {
-    const { sessionId } = req.params;
-    const result = await SessionService.startSession(sessionId);
+    console.log("gameCode param:", req.params);
+    const { gameCode } = req.params;
+    const result = await SessionService.startSession(gameCode);
     res.json(result);
   } catch (error) {
     console.error(error);

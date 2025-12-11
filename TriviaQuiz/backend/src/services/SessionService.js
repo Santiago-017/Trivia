@@ -22,7 +22,7 @@ class SessionService {
       created_at: new Date()
     });
     
-
+    console.log("Session created with ID:", s);
     return s;
   }
 
@@ -83,39 +83,54 @@ class SessionService {
     return pa;
   }
 
-  async startSession(sessionId) {
-  console.log("Iniciando sesión:", sessionId);
-  const session = await SessionModel.findByPk(sessionId);
+  async startSession(gameCode) {
+  console.log("Iniciando sesión con gameCode:", gameCode);
+
+  if (!gameCode) {
+    throw new Error('gameCode is required');
+  }
+
+  // 1) Buscar la sesión por game_code
+  const session = await SessionModel.findOne({
+    where: { game_code: gameCode }
+  });
 
   if (!session) {
+    console.error('No se encontró sesión con game_code =', gameCode);
     throw new Error('Session not found');
   }
 
-  // 1) Marcar la sesión como iniciada
+  // Sacamos el ID real de la sesión de la BD
+  const sessionId = session.session_id;
+  console.log('Sesión encontrada. session_id =', sessionId);
+
+  // 2) Marcar la sesión como iniciada
   session.status = 'started';
-  session.started_at = new Date();   // usa el nombre de columna que ya tenías
+  session.started_at = new Date();
   await session.save();
 
-  // 2) Generar SIEMPRE las preguntas desde la API para esta sesión
+  // 3) Generar SIEMPRE las preguntas desde la API para esta sesión
   console.log('Generando preguntas desde la API para la sesión:', sessionId);
   const questions = await this.generateQuestionsFromAPI(sessionId);
 
   console.log('Preguntas generadas para la sesión:', questions.length);
 
-  // 3) Tomar la primera
   const firstQuestion = questions[0];
-  console.log('Primera pregunta para la sesión:', firstQuestion.payload);
-
   if (!firstQuestion) {
+    console.error('No se encontró primera pregunta para la sesión:', sessionId);
     throw new Error('First question not found');
   }
 
+  console.log('Primera pregunta para la sesión:', firstQuestion.payload);
+
+  // 4) Devolver al front lo que necesita
   return {
     sessionId,
-    status: "started",
+    status: 'started',
     firstQuestion: firstQuestion.payload
-  };    
+  };
 }
+
 
 
   async getNextQuestion(sessionId, currentQuestionOrder) {
@@ -128,6 +143,13 @@ class SessionService {
   if (!question) {
     return { finished: true };
   }
+  const session = await SessionModel.findByPk(sessionId);
+  if (!session) {
+    throw new Error("Session not found");
+  }
+
+  
+  console.log("maximode preguntas",session);
   console.log('Siguiente pregunta obtenida:', question.payload);
   return { finished: false, question: question.payload };
 }

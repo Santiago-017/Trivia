@@ -79,7 +79,7 @@ export class Join {
         );
 
         // 👉 Redirigir a la sala (quiz)
-        this.router.navigate(['/quiz', sessionIdFromRes]);
+        this.router.navigate(['/quiz', gameCodeFromRes]);
       },
       error: (err) => {
         this.loading = false;

@@ -37,108 +37,79 @@ export class Quiz implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-  // 🔹 1. Intentar leer el ID de la URL con varios nombres posibles
   const paramMap = this.route.snapshot.paramMap;
 
-  // Soporta rutas tipo /quiz/:sessionId o /quiz/:id
-  let routeIdStr =
-    paramMap.get('sessionId') ||
-    paramMap.get('id') ||
-    paramMap.get('session_id'); // por si la ruta está así
-
-  // 🔹 2. Intentar leer de localStorage
-  const storedIdStr = localStorage.getItem('sessionId');
-
-  // 🔹 3. Elegir el mejor valor disponible
-  let idStr: string | null = null;
-
-  if (routeIdStr && routeIdStr !== 'null' && routeIdStr !== 'undefined') {
-    idStr = routeIdStr;
-  } else if (
-    storedIdStr &&
-    storedIdStr !== 'null' &&
-    storedIdStr !== 'undefined'
-  ) {
-    idStr = storedIdStr;
-  }
-
-  if (!idStr) {
-    console.error(
-      'Quiz → No se pudo determinar sessionId (viene null/undefined).',
-      { routeIdStr, storedIdStr }
-    );
-    // No rompemos la app, solo volvemos al menú de salas
+  // 1) Leer gameCode de la URL: /quiz/:gameCode
+  this.gameCode = paramMap.get('game_code') || '';
+  if (!this.gameCode) {
+    console.error('Quiz → No hay gameCode en la URL');
     this.router.navigate(['/room/room-menu']);
     return;
   }
+  console.log('Quiz → gameCode:', this.gameCode);
 
-  // Aquí ya tenemos un ID válido
-  this.sessionId = idStr;
-  console.log('Quiz → sessionId usado:', this.sessionId);
-
-  // 🔹 4. Lo demás igual que antes
-  this.gameCode = localStorage.getItem('gameCode') || '';
+  // 2) gameCode y rol host
   this.isHost = localStorage.getItem('isHost') === 'true';
+  console.log('Quiz → isHost:', this.isHost);
 
+  // 3) userId: viene del login, NO del sessionId
   const nickname = localStorage.getItem('nickname') || 'Jugador';
   const userIdStr = localStorage.getItem('userId');
-  const userId = userIdStr ? Number(userIdStr) : (this.sessionId as any);
+  const userId = userIdStr ? Number(userIdStr) : null;
 
-  // 2. Unirse a la sala de sockets por gameCode
-  if (this.gameCode) {
-    this.socketService.joinSession(this.gameCode, userId, nickname);
+  if (!userId || Number.isNaN(userId)) {
+    console.error('Quiz → No hay userId válido, redirigiendo a login...');
+    this.router.navigate(['/auth/login']);
+    return;
   }
 
-  // 3. Escuchar nuevas preguntas por sockets
+  // 4) Unirse al socket por gameCode
+  this.socketService.joinSession(this.gameCode, userId, nickname);
+
+  // 5) Escuchar preguntas por sockets
   this.subs.push(
     this.socketService.onNewQuestion().subscribe((q: any) => {
       this.setQuestion(q);
     })
   );
 
-  // 4. Si soy el HOST, arranco la partida
+  // 6) Si soy host, iniciar la partida
   if (this.isHost) {
     this.startGameAsHost();
   }
 
-  // 5. (Opcional) escuchar respuestas
+  // 7) Escuchar respuestas
   this.subs.push(
     this.socketService.onPlayerAnswered().subscribe((info: any) => {
       console.log('Respuesta de un jugador:', info);
-      // aquí podrías actualizar un scoreboard local
     })
   );
 }
+
+
 
   // HOST: cargar primera pregunta y avisar por sockets
   startGameAsHost() {
   this.gameStarted = true;
   this.currentQuestionOrder = 0;
 
-  // Ahora SÍ llamamos al endpoint de iniciar sesión
-  this.sessionService.start(this.sessionId).subscribe({
+  this.sessionService.start(this.gameCode).subscribe({
     next: (res: any) => {
-      console.log('Respuesta de startSession:', res);
+      // Guardar el sessionId real que devuelve el back
+      this.sessionId = res.sessionId ?? res.session_id ?? null;
+      console.log('Quiz → sessionId recibido del back:', this.sessionId);
 
-      // La pregunta viene en res.firstQuestion
       const question = res.firstQuestion;
-
       if (!question) {
         console.error('No se encontró firstQuestion en la respuesta:', res);
         return;
       }
 
-      // Si el back incluye questionOrder, úsalo; si no, asumimos 0
-      if (question.questionOrder != null) {
-        this.currentQuestionOrder = question.questionOrder;
-      } else {
-        this.currentQuestionOrder = 0;
-      }
+      this.currentQuestionOrder =
+        question.questionOrder != null ? question.questionOrder : 0;
 
-      // Mostrar la pregunta en pantalla
       this.setQuestion(question);
 
-      // Avisar a todos los clientes por sockets
       if (this.gameCode) {
         this.socketService.sendNextQuestion(this.gameCode, question);
       }
@@ -148,6 +119,7 @@ export class Quiz implements OnInit, OnDestroy {
     }
   });
 }
+
 
   // Mostrar pregunta + arrancar contador
   setQuestion(question: any) {
@@ -184,9 +156,7 @@ export class Quiz implements OnInit, OnDestroy {
       if (this.timer <= 0) {
         clearInterval(this.timerId);
         // cuando se acaba el tiempo el HOST puede avanzar de pregunta
-        if (this.isHost) {
-          this.nextQuestion();
-        }
+        this.nextQuestion();
       }
     }, 1000);
   }
