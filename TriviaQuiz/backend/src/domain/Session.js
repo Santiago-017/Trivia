@@ -1,11 +1,12 @@
 
 class Session {
-  constructor({ id=null, hostId, gameCode, category=null, difficulty=null, numQuestions=10, status='pending', createdAt=null, startedAt=null, endedAt=null }) {
+  constructor({ id=null, hostId, gameCode, category=null, difficulty=null, numQuestions=10, mode=null, status='pending', createdAt=null, startedAt=null, endedAt=null }) {
     this.id = id;
     this.hostId = hostId;
     this.gameCode = gameCode;
     this.category = category;
     this.difficulty = difficulty;
+    this.mode = mode;
     this.numQuestions = numQuestions;
     this.status = status;
     this.createdAt = createdAt;

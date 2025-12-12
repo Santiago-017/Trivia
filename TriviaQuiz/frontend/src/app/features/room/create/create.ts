@@ -35,6 +35,10 @@ export class Create {
   categories = ['GENERAL', 'SCIENCE', 'HISTORY', 'SPORTS'];
   categoryIndex = 0;
 
+  //MODE
+  modes = ['coop', 'vs'];
+  modeIndex = 0;
+
   constructor(
     private router: Router, 
     private sessionService: Session
@@ -63,17 +67,23 @@ export class Create {
     const len = this.categories.length;
     this.categoryIndex = (this.categoryIndex + delta + len) % len;
   }
+  changeMode(delta: number) {
+    const len = this.modes.length;
+    this.modeIndex = (this.modeIndex + delta + len) % len;
+  }
 
   // FINAL METHOD TO CREATE THE SESSION
   createSession() {
     this.loading = true;
     this.error = "";
+    localStorage.setItem('isHost', 'true');
 
     const dto = {
       players: this.players,
       difficulty: this.difficulties[this.difficultyIndex],
       questions: this.questions,
-      category: this.categories[this.categoryIndex]
+      category: this.categories[this.categoryIndex],
+      mode: this.modes[this.modeIndex]
     };
 
     this.sessionService.create(dto).subscribe({

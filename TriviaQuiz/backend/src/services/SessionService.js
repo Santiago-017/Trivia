@@ -6,8 +6,8 @@ const fetch = require('node-fetch');
 
 class SessionService {
 
-  async createSession({ hostId, category, difficulty, numQuestions, maxPlayers }) {
-    console.log("Creating session for hostId:", hostId, numQuestions);
+  async createSession({ hostId, category, difficulty, numQuestions, maxPlayers, mode }) {
+    console.log("Creating session for hostId:", hostId, numQuestions, mode);
 
     const code = Math.random().toString(36).substring(2, 8).toUpperCase();
 
@@ -18,6 +18,7 @@ class SessionService {
       difficulty,
       num_questions: numQuestions, // ⭐ Match con el modelo
       max_players: maxPlayers,     // ⭐ Match con el modelo
+      mode,
       status: 'pending',
       created_at: new Date()
     });
@@ -131,8 +132,6 @@ class SessionService {
   };
 }
 
-
-
   async getNextQuestion(sessionId, currentQuestionOrder) {
   const question = await SessionQuestionModel.findOne({
     where: {
@@ -149,11 +148,9 @@ class SessionService {
   }
 
   
-  console.log("maximode preguntas",session);
-  console.log('Siguiente pregunta obtenida:', question.payload);
+  
   return { finished: false, question: question.payload };
 }
-
 
   async joinSessionByCode(gameCode, userId, nickname) {
     // 1. Buscar la sesión por game_code

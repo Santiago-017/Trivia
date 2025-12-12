@@ -24,6 +24,11 @@ export class Auth {
         if (res?.token) {
           localStorage.setItem('token', res.token); // guardar JWT [web:49][web:153]
         }
+        const userId = res?.user?.id;
+        localStorage.setItem('userId', userId);
+        console.log('Storing userId in localStorage:', userId);
+        const username = res?.user?.username;
+        localStorage.setItem('username', username);
       })
     );
   }

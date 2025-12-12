@@ -72,6 +72,21 @@ export class SocketService {
       return () => this.socket.off('playerAnswered', handler);
     });
   }
+  // Pedir que se pase a la siguiente pregunta
+  requestNextQuestion(gameCode: string) {
+    this.socket.emit('requestNextQuestion', { gameCode });
+  }
+
+  // Host escucha peticiones de "siguiente pregunta"
+  onRequestNextQuestion(): Observable<any> {
+    console.log('Setting up onRequestNextQuestion listener');
+    return new Observable((subscriber) => {
+      const handler = (data: any) => subscriber.next(data);
+      this.socket.on('requestNextQuestion', handler);
+      return () => this.socket.off('requestNextQuestion', handler);
+    });
+  }
+
 
   disconnect() {
     this.socket.disconnect();

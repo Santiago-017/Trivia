@@ -14,9 +14,10 @@ export class Session {
     difficulty: string;
     questions: number;
     category: string;
+    mode: string;
   }): Observable<any> {
-    // POST http://IP:3000/sessions
-    return this.http.post(`${environment.wsUrl}/sessions`, dto);
+    // POST http://IP:3000/sessions    
+    return this.http.post(`${environment.wsUrl}/sessions`, dto);    
   }
 
   // (por si lo necesitas) obtener sesión por id

@@ -12,6 +12,7 @@ const Session = sequelize.define('Session', {
   category: { type: DataTypes.STRING(100) },
   difficulty: { type: DataTypes.STRING(10) },
   num_questions: { type: DataTypes.INTEGER },
+  mode: { type: DataTypes.STRING(10) },
 
   // ⭐ NUEVO CAMPO
   max_players: {

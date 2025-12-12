@@ -9,6 +9,8 @@ const SessionQuestion = require('./sessionQuestion.model');
 const SessionPlayer = require('./sessionPlayer.model');
 const PlayerAnswer = require('./playerAnswer.model');
 const ActivityLog = require('./activityLog.model');
+const UserStats = require('./UserStats.model');
+
 
 // ========== RELACIONES ==========
 
@@ -48,11 +50,15 @@ User.hasMany(ActivityLog, { foreignKey: 'userId', as: 'activityLogs' });
 ActivityLog.belongsTo(Session, { foreignKey: 'sessionId', as: 'session' });
 Session.hasMany(ActivityLog, { foreignKey: 'sessionId', as: 'activityLogs' });
 
+UserStats.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+User.hasOne(UserStats, { foreignKey: 'user_id', as: 'stats' });
+
 module.exports = {
   User,
   Session,
   SessionQuestion,
   SessionPlayer,
   PlayerAnswer,
-  ActivityLog
+  ActivityLog,
+  UserStats
 };

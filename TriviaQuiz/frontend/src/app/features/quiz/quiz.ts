@@ -39,49 +39,46 @@ export class Quiz implements OnInit, OnDestroy {
   ngOnInit(): void {
   const paramMap = this.route.snapshot.paramMap;
 
-  // 1) Leer gameCode de la URL: /quiz/:gameCode
   this.gameCode = paramMap.get('game_code') || '';
   if (!this.gameCode) {
-    console.error('Quiz → No hay gameCode en la URL');
     this.router.navigate(['/room/room-menu']);
     return;
   }
-  console.log('Quiz → gameCode:', this.gameCode);
 
-  // 2) gameCode y rol host
   this.isHost = localStorage.getItem('isHost') === 'true';
-  console.log('Quiz → isHost:', this.isHost);
-
-  // 3) userId: viene del login, NO del sessionId
   const nickname = localStorage.getItem('nickname') || 'Jugador';
   const userIdStr = localStorage.getItem('userId');
+  console.log('userIdStr from localStorage:', userIdStr);
   const userId = userIdStr ? Number(userIdStr) : null;
 
   if (!userId || Number.isNaN(userId)) {
-    console.error('Quiz → No hay userId válido, redirigiendo a login...');
     this.router.navigate(['/auth/login']);
     return;
   }
 
-  // 4) Unirse al socket por gameCode
+  // 1) Unirse a la sala
   this.socketService.joinSession(this.gameCode, userId, nickname);
 
-  // 5) Escuchar preguntas por sockets
+  // 2) TODOS escuchan nuevas preguntas desde aquí
   this.subs.push(
     this.socketService.onNewQuestion().subscribe((q: any) => {
-      this.setQuestion(q);
+      this.setQuestion(q);              // 👈 aquí arranca el juego en todos
     })
   );
 
-  // 6) Si soy host, iniciar la partida
-  if (this.isHost) {
-    this.startGameAsHost();
-  }
-
-  // 7) Escuchar respuestas
+  // 3) Escuchar respuestas (opcional)
   this.subs.push(
     this.socketService.onPlayerAnswered().subscribe((info: any) => {
       console.log('Respuesta de un jugador:', info);
+    })
+  );
+
+  this.subs.push(
+    this.socketService.onRequestNextQuestion().subscribe((data: any) => {
+      console.log('requestNextQuestion recibido:', data);
+      if (this.isHost) {
+        this.nextQuestion();
+      }
     })
   );
 }
@@ -90,6 +87,9 @@ export class Quiz implements OnInit, OnDestroy {
 
   // HOST: cargar primera pregunta y avisar por sockets
   startGameAsHost() {
+  // Seguridad extra: solo el host debería poder hacer esto
+  
+
   this.gameStarted = true;
   this.currentQuestionOrder = 0;
 
@@ -108,8 +108,10 @@ export class Quiz implements OnInit, OnDestroy {
       this.currentQuestionOrder =
         question.questionOrder != null ? question.questionOrder : 0;
 
-      this.setQuestion(question);
+      // ❌ Ya NO llamamos setQuestion aquí
+      // this.setQuestion(question);
 
+      // ✅ En su lugar, mandamos la pregunta por socket
       if (this.gameCode) {
         this.socketService.sendNextQuestion(this.gameCode, question);
       }
@@ -121,8 +123,10 @@ export class Quiz implements OnInit, OnDestroy {
 }
 
 
+
   // Mostrar pregunta + arrancar contador
   setQuestion(question: any) {
+  this.gameStarted = true;
   console.log('Mostrando pregunta:', question);
   this.question = question.question;
 
@@ -164,6 +168,17 @@ export class Quiz implements OnInit, OnDestroy {
   // Solo el HOST debería llamar a esto realmente
   // Solo el HOST debería llamar a esto realmente
 nextQuestion() {
+  // Solo el host debe ejecutar lógica de backend
+  if (!this.isHost) {
+    console.warn('nextQuestion llamado por no-host, ignorando.');
+    return;
+  }
+
+  if (!this.sessionId) {
+    console.error('nextQuestion → No hay sessionId aún');
+    return;
+  }
+
   this.currentQuestionOrder++;
 
   this.sessionService
@@ -173,25 +188,22 @@ nextQuestion() {
         console.log('Respuesta de nextQuestion:', res);
 
         if (res.finished) {
+          // Solo el host decide ir al scoreboard
           this.router.navigate(['/scoreboard', this.sessionId]);
           return;
         }
 
-        // El back debe devolver { finished: false, question: {...} }
         const question = res.question || res;
-
         if (!question) {
           console.error('No se pudo obtener la siguiente pregunta:', res);
           return;
         }
 
-        // Si viene questionOrder, lo sincronizamos por si acaso
         if (question.questionOrder != null) {
           this.currentQuestionOrder = question.questionOrder;
         }
 
-        this.setQuestion(question);
-
+        // El host manda la nueva pregunta a TODOS
         if (this.gameCode) {
           this.socketService.sendNextQuestion(this.gameCode, question);
         }
@@ -203,21 +215,28 @@ nextQuestion() {
 }
 
 
+
   // Cuando el jugador selecciona una opción
   selectOption(index: number) {
     this.selectedIndex = index;
     console.log('Opción seleccionada:', index);
-
+    const userIdStr = localStorage.getItem('userId');
+    const userId = userIdStr ? Number(userIdStr) : null;
+    const selectedOption = this.options[index];  
     // ejemplo: mandar la respuesta por sockets
     if (this.gameCode) {
       this.socketService.sendAnswer(this.gameCode, {
         sessionId: this.sessionId,
+        userId: userId,
         questionOrder: this.currentQuestionOrder,
         optionIndex: index,
+        selectedOption
       });
     }
     
-      this.nextQuestion();
+    if (this.gameCode){
+      this.socketService.requestNextQuestion(this.gameCode);
+    }
     
   }
 

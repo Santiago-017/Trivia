@@ -8,7 +8,8 @@ exports.createSession = async (req, res) => {
       category: req.body.category,
       difficulty: req.body.difficulty,
       numQuestions: req.body.questions,
-      maxPlayers: req.body.players
+      maxPlayers: req.body.players,
+      mode: req.body.mode
     });
     res.json({ ok: true, session: doc });
   } catch (err) {

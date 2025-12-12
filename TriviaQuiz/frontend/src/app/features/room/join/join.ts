@@ -42,6 +42,7 @@ export class Join {
     this.sessionService.joinByCode(this.gameCode, this.nickname).subscribe({
       next: (res: any) => {
         this.loading = false;
+        localStorage.removeItem('isHost');
 
         console.log('joinByCode response:', res);
 
@@ -67,9 +68,7 @@ export class Join {
         localStorage.setItem('gameCode', String(gameCodeFromRes));
         localStorage.setItem('nickname', this.nickname);
         localStorage.setItem('isHost', 'false');
-        if (playerIdFromRes != null) {
-          localStorage.setItem('userId', String(playerIdFromRes));
-        }
+        
 
         // Unirse a la sala de sockets
         this.socketService.joinSession(
