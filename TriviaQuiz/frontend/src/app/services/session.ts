@@ -49,6 +49,10 @@ export class Session {
       {}
     );
   }
+  getScoreboard(gameCode: string) {
+  return this.http.get(`${environment.wsUrl}/sessions/${gameCode}/scoreboard`);
+  }
+
 
   // Pedir la siguiente pregunta (se usa el sessionId INTERNO)
   nextQuestion(

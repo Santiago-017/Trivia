@@ -1,5 +1,36 @@
 <div class="game-bg">
   <div class="game-bg__clouds"></div>
+  <!-- 🧾 SCOREBOARD (esquina superior izquierda) -->
+  <div class="scoreboard">
+    <!-- COOP -->
+    <ng-container *ngIf="mode === 'coop'; else vsBoard">
+      <div class="scoreboard__title">CO-OP</div>
+      <div class="scoreboard__row">
+        <span class="scoreboard__label">Team</span>
+        <span class="scoreboard__value">{{ teamScore }}</span>
+      </div>
+    </ng-container>
+
+    <!-- VS -->
+    <ng-template #vsBoard>
+      <div class="scoreboard__title">InRoom</div>
+
+      <div class="scoreboard__table">
+        <div class="scoreboard__head">
+          <span>Player</span>
+          <span>Points</span>
+        </div>
+
+        <div
+          class="scoreboard__line"
+          *ngFor="let p of players"
+        >
+          <span class="scoreboard__name">{{ p.nickname }}</span>
+          <span class="scoreboard__pts">{{ p.score }}</span>
+        </div>
+      </div>
+    </ng-template>
+  </div>
 
   <div class="quiz-panel">
     <!-- Cuerdas -->
@@ -10,13 +41,36 @@
 
     <!-- 💥 ESTADO: ESPERANDO PARA INICIAR -->
     <div *ngIf="!gameStarted" class="quiz-panel__question-card start-card">
+      <!-- 🆔 ROOM CODE -->
+      <div class="room-code" (click)="copyRoomCode()">
+        <span class="room-code__label">ROOM CODE</span>
+        <span class="room-code__value">{{ gameCode }}</span>
+        <span class="room-code__hint">
+          {{ codeCopied ? 'Copied!' : 'Click to copy' }}
+      </span>
+    </div>
+
+
       <h1 class="title-1 quiz-panel__question">
-        Sala lista para comenzar
+        Room ready to start
       </h1>
 
-      <button class="start-btn" (click)="startGameAsHost()">
+      <!-- Solo el host ve el botón -->
+      <button
+        *ngIf="isHost; else waitingHost"
+        class="start-btn"
+        type="button"
+        (click)="startGameAsHost()"
+      >
         START GAME
       </button>
+
+      <!-- Los demás solo ven mensaje -->
+      <ng-template #waitingHost>
+        <p class="start-hint">
+          Waiting for the host to start the game...
+        </p>
+      </ng-template>
     </div>
 
     <!-- 💥 ESTADO: JUEGO INICIADO -->

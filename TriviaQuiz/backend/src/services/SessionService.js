@@ -6,8 +6,7 @@ const fetch = require('node-fetch');
 
 class SessionService {
 
-  async createSession({ hostId, category, difficulty, numQuestions, maxPlayers, mode }) {
-    console.log("Creating session for hostId:", hostId, numQuestions, mode);
+  async createSession({ hostId, category, difficulty, numQuestions, maxPlayers, mode }) {    
 
     const code = Math.random().toString(36).substring(2, 8).toUpperCase();
 
@@ -122,7 +121,7 @@ class SessionService {
     throw new Error('First question not found');
   }
 
-  console.log('Primera pregunta para la sesión:', firstQuestion.payload);
+  
 
   // 4) Devolver al front lo que necesita
   return {
@@ -230,7 +229,7 @@ class SessionService {
     const apiResp = await fetch(url);
     const data = await apiResp.json();
 
-    console.log("Preguntas obtenidas de API externa:", data.results?.length || 0);
+    
 
     if (!data.results || data.results.length === 0) {
       throw new Error('No questions found from API');
@@ -268,6 +267,31 @@ class SessionService {
 
     return createdQuestions;
   }
-}
+  async getScoreboardByCode(gameCode) {
+    // 1. Buscar la sesión por game_code
+    const session = await SessionModel.findOne({ where: { game_code: gameCode } });
+    if (!session) {
+      throw new Error('Session not found');
+    }
+    const rows= await SessionPlayerModel.findAll({
+      where: { sessionId: session.session_id },
+      attributes: ['userId', 'nickname', 'score'],
+      order: [['score', 'DESC']]
+    });
+    console.log('team score', gameCode, ':', session.team_score);
+    return{
+      gameCode,
+      sessionId: session.session_id,
+      mode: session.mode || 'vs',
+      teamScore: session.team_score ?? 0,
+      teamStreak: session.team_streak ?? 0,
+      players: rows.map(r => ({
+        userId: r.userId,
+        nickname: r.nickname,
+        score: r.score ?? 0
+      })) 
+    };
+  }
+};
 
 module.exports = new SessionService();

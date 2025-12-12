@@ -14,26 +14,30 @@ import { SocketService } from '../../../services/socket.service';
 })
 export class Join {
   gameCode = '';
-  nickname = '';
   loading = false;
   error = '';
+
+  private nickname = '';
 
   constructor(
     private sessionService: Session,
     private router: Router,
     private socketService: SocketService
-  ) {}
+  ) {
+    // ✅ Obtener nickname desde login
+    this.nickname = localStorage.getItem('nickname') || '';
+  }
 
   joinSession() {
     this.error = '';
 
-    if (!this.nickname.trim()) {
-      this.error = 'Debes ingresar un nickname';
+    if (!this.nickname) {
+      this.error = 'You must be logged in to join a room';
       return;
     }
 
     if (!this.gameCode.trim()) {
-      this.error = 'Debes ingresar el código de la partida';
+      this.error = 'You must enter the room code';
       return;
     }
 
@@ -46,20 +50,14 @@ export class Join {
 
         console.log('joinByCode response:', res);
 
-        // Según tu respuesta actual:
-        // { ok: true, gameCode: '0FP0AF', player: { id, sessionId, userId, ... } }
         const player = res.player || {};
         const sessionIdFromRes = player.sessionId;
         const gameCodeFromRes = res.gameCode || this.gameCode;
-        const playerIdFromRes = player.id ?? player.userId;
+        const playerIdFromRes = player.userId;
 
         if (!sessionIdFromRes) {
-          console.error(
-            'No se pudo determinar sessionId desde la respuesta:',
-            res
-          );
-          this.error =
-            'Error interno: sessionId inválido en la respuesta del servidor';
+          console.error('Invalid sessionId:', res);
+          this.error = 'Internal error: invalid session';
           return;
         }
 
@@ -68,16 +66,15 @@ export class Join {
         localStorage.setItem('gameCode', String(gameCodeFromRes));
         localStorage.setItem('nickname', this.nickname);
         localStorage.setItem('isHost', 'false');
-        
 
         // Unirse a la sala de sockets
         this.socketService.joinSession(
           String(gameCodeFromRes),
-          playerIdFromRes ?? sessionIdFromRes,
+          playerIdFromRes,
           this.nickname
         );
 
-        // 👉 Redirigir a la sala (quiz)
+        // 👉 Ir al quiz
         this.router.navigate(['/quiz', gameCodeFromRes]);
       },
       error: (err) => {
@@ -86,7 +83,7 @@ export class Join {
         this.error =
           err.error?.message ||
           err.error?.msg ||
-          'Error al unirse a la sesión';
+          'Failed to join the room';
       }
     });
   }

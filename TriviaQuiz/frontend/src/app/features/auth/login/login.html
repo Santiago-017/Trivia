@@ -40,15 +40,14 @@
         (click)="login()"
         [disabled]="loading"
       >
-          {{ loading ? 'Logging in...' : 'LOGIN' }}
+        {{ loading ? 'Logging in...' : 'LOGIN' }}
       </button>
 
     </form>
 
     <p class="switch-auth">
-      Don't have an account?
+      Don’t have an account?
       <a routerLink="/register">Sign up</a>
     </p>
   </div>
 </div>
-

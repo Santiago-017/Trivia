@@ -9,5 +9,7 @@ router.post('/:gameCode/start', controller.start);
 router.get('/:sessionId/next-question/:currentQuestionOrder', controller.getNextQuestion);
 router.post('/join-by-code', controller.joinByCode);
 router.get('/code/:gameCode/next-question/:currentQuestionOrder', controller.getNextQuestionByCode);
+router.get('/:gameCode/scoreboard', controller.getScoreboardByCode);
+
 
 module.exports = router;

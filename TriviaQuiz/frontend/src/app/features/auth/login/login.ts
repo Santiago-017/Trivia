@@ -30,6 +30,7 @@ export class Login {
       .subscribe({
         next: (res: any) => {
           this.loading = false;
+          localStorage.setItem('nickname', this.username);
           // el token ya se guardó en el servicio (tap)
           this.router.navigate(['/room/room-menu']); // o '/lobby', '/home', etc. [web:158][web:167]
         },

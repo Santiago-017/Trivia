@@ -9,7 +9,8 @@ const SessionPlayer = sequelize.define('SessionPlayer', {
   leftAt: DataTypes.DATE,
   score: DataTypes.INTEGER,
   active: DataTypes.BOOLEAN,
-  nickname: DataTypes.STRING
+  nickname: DataTypes.STRING,
+  streak: DataTypes.INTEGER 
 }, { timestamps: true });
 
 module.exports = SessionPlayer;

@@ -8,21 +8,12 @@
     </h1>
 
     <p class="join-panel__subtitle">
-      ENTER THE ROOM CODE AND YOUR NICKNAME.
+      ENTER THE ROOM CODE.
     </p>
 
     <div class="join-panel__form">
 
-      <!-- NICKNAME -->
-      <input
-        type="text"
-        class="join-input"
-        placeholder="NICKNAME"
-        maxlength="20"
-        [(ngModel)]="nickname"
-        name="nickname"
-      />
-
+      
       <!-- ROOM CODE -->
       <input
         type="text"
@@ -38,7 +29,7 @@
         class="btn-nintendo join-panel__btn"
         type="button"
         (click)="joinSession()"
-        [disabled]="!gameCode || !nickname || loading"
+        [disabled]="!gameCode || loading"
       >
         {{ loading ? 'JOINING...' : 'JOIN ROOM' }}
       </button>

@@ -72,6 +72,7 @@ export class SocketService {
       return () => this.socket.off('playerAnswered', handler);
     });
   }
+
   // Pedir que se pase a la siguiente pregunta
   requestNextQuestion(gameCode: string) {
     this.socket.emit('requestNextQuestion', { gameCode });
@@ -87,6 +88,33 @@ export class SocketService {
     });
   }
 
+  // emitir (host)
+  finishGame(gameCode: string, payload: any) {
+    this.socket.emit('finishGame', { gameCode, ...payload });
+  }
+
+  // escuchar (todos)
+  onGameFinished(): Observable<any> {
+    return new Observable((subscriber) => {
+      const handler = (data: any) => subscriber.next(data);
+      this.socket.on('gameFinished', handler);
+      return () => this.socket.off('gameFinished', handler);
+    });
+  }
+
+  // ✅ CAMBIO 1: corregir nombre y quitar fromEvent (NO existe en socket.io-client)
+  onPlayersSnapshot(): Observable<any[]> {
+    return new Observable<any[]>((subscriber) => {
+      const handler = (data: any[]) => subscriber.next(data);
+      this.socket.on('playersSnapshot', handler);
+      return () => this.socket.off('playersSnapshot', handler);
+    });
+  }
+
+  // ✅ CAMBIO 2: esto está bien, lo dejamos igual
+  requestPlayersSnapshot(gameCode: string) {
+    this.socket.emit('requestPlayersSnapshot', { gameCode });
+  }
 
   disconnect() {
     this.socket.disconnect();

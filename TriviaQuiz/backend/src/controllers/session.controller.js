@@ -131,4 +131,14 @@ exports.getNextQuestionByCode = async (req, res) => {
     res.status(400).json({ ok: false, msg: error.message });
   }
 };
+exports.getScoreboardByCode = async (req, res) => {
+  try {
+    const { gameCode } = req.params;
+    const data = await SessionService.getScoreboardByCode(gameCode);
+    res.json(data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error al obtener scoreboard' });
+  }
+};
 

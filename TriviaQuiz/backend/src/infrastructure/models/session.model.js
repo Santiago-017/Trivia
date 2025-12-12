@@ -13,6 +13,9 @@ const Session = sequelize.define('Session', {
   difficulty: { type: DataTypes.STRING(10) },
   num_questions: { type: DataTypes.INTEGER },
   mode: { type: DataTypes.STRING(10) },
+  team_score: { type: DataTypes.INTEGER, defaultValue: 0 },
+  team_streak: { type: DataTypes.INTEGER, defaultValue: 0 },
+
 
   // ⭐ NUEVO CAMPO
   max_players: {

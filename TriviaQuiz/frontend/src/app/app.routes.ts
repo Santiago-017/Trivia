@@ -62,7 +62,7 @@ export const routes: Routes = [
     import('./features/quiz/quiz').then(m => m.Quiz),
   },
   {
-  path: 'scoreboard',
+  path: 'scoreboard/:game_code',
   loadComponent: () =>
     import('./features/scoreboard/scoreboard').then(m => m.Scoreboard),
   },
