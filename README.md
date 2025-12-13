@@ -137,3 +137,31 @@ The system follows a **layered architecture**:
 ```bash
 cd TriviaQuiz/backend
 npm install
+```
+### Create a .env file:
+
+```bash
+PORT=3000
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=trivia_db
+JWT_SECRET=your_secret_key
+```
+
+### Run backend in development mode:
+
+```bash
+npm run dev
+```
+
+### Frontend setup
+
+```bash
+cd TriviaQuiz/frontend
+npm install
+npm start
+```
+
+
+
