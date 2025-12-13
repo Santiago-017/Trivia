@@ -160,7 +160,8 @@ npm run dev
 ```bash
 cd TriviaQuiz/frontend
 npm install
-npm start
+npm install -g @angular/cli
+ng serve
 ```
 
 
