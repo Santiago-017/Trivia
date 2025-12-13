@@ -37,11 +37,16 @@ This project was developed as the **Final Project for Software Engineering II** 
 ## 🏗️ Project Structure
 
 TRIVIA/
+
 │
 └── TriviaQuiz/
+
 ├── backend/ # Node.js + Express REST API
+
 ├── frontend/ # Angular frontend application
+
 ├── Db/ # Database scripts / schema
+
 └── .angular/ # Angular build/cache files
 
 
