@@ -13,7 +13,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: backend
+        working-directory: TriviaQuiz/backend
 
     steps:
       - name: Checkout repository
@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: backend/package-lock.json
+          cache-dependency-path: TriviaQuiz/backend/package-lock.json
 
       - name: Install backend dependencies
         run: npm ci
@@ -38,8 +38,8 @@ jobs:
       - name: Build backend Docker image
         uses: docker/build-push-action@v6
         with:
-          context: ./backend
-          file: ./backend/Dockerfile
+          context: TriviaQuiz/backend
+          file: TriviaQuiz/backend/Dockerfile
           push: false
           tags: triviaquiz-backend:ci
           cache-from: type=gha
@@ -51,7 +51,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: frontend
+        working-directory: TriviaQuiz/frontend
 
     steps:
       - name: Checkout repository
@@ -62,7 +62,7 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: frontend/package-lock.json
+          cache-dependency-path: TriviaQuiz/frontend/package-lock.json
 
       - name: Install frontend dependencies
         run: npm ci
@@ -76,8 +76,8 @@ jobs:
       - name: Build frontend Docker image
         uses: docker/build-push-action@v6
         with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
+          context: TriviaQuiz/frontend
+          file: TriviaQuiz/frontend/Dockerfile
           push: false
           tags: triviaquiz-frontend:ci
           cache-from: type=gha
