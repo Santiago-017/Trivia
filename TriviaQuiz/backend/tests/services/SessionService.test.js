@@ -1,6 +1,11 @@
 jest.mock('../../src/infrastructure/models/sessionQuestion.model', () => ({
   findOne: jest.fn(),
 }));
+jest.mock('../../src/infrastructure/models/session.model', () => ({
+  findByPk: jest.fn(),
+}));
+  
+  
 const SessionQuestionModel = require('../../src/infrastructure/models/sessionQuestion.model');
 
 const SessionService = require('../../src/services/SessionService');
